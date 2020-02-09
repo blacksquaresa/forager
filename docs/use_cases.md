@@ -23,3 +23,23 @@ After PNP, Carol goes to Food Lovers Market (FLM). She opens the FLM list from t
 When she's done, Carol closes the shopping list, even though there are a couple of items still un-bought. She isn't planning to get those; she's decides she can live without those for this week.
 
 The app asks her if she'd like to carry the remaining items to the next list. She agrees, and the app automatically starts a new shopping list for next week with those items on it.
+
+## Edgar need sugar
+
+Edgar uses the last of the sugar in his tea, so he opens the app to add sugar to the list. His family is new to the app, and they don't have sugar in their list of regular items already, so Edgar has to add it. Edgar doesn't know the details of the sugar he needs, so he creates a new entry with just the information he knows. Edgar chooses the option to automatically add the new item to the current shopping list.
+
+## Brad checks the list
+
+Brad is about to go shopping, and checks the list. He sees that Edgar has added "sugar" with no details, so he updates that entry, adding a brand "Hulletts", and size "3 kg", and a description "brown sugar only". He then marks the entry with a flag that indicates that the brand and size are not deal breakers (ie: a different brand and /or size are ok as substitutes). He also adds PnP and FLM as sources for the sugar. The entry is now updated permanently, not just for this shopping list.
+
+## Brad gets the app for the first time
+
+Brad finds this new great app on the app store, and decides to try it for his family. He launches the app, and creates a new Family (Dershowitz). He adds four or five of the most common items his family buys every week to the family database, but leaves the rest for later. He also adds Carol and Edgar as family members using their gmail email accounts.
+
+## Carol gets the app too
+
+Brad shows Carol the app. She downloads it, and logs in. She sees that she is automatically part of the Dershowitz family, and can see the (still very short) list of items in the family database.
+
+## Carol adds a menu
+
+Carol decides to add a menu for Mac and Cheese. She adds the macaroni, cheese and milk, and defines what quantities are required for the menu. She adds this menu to the current shopping list, and sees the three items she created added to the list.
