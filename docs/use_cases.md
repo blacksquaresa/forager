@@ -42,4 +42,6 @@ Brad shows Carol the app. She downloads it, and logs in. She sees that she is au
 
 ## Carol adds a menu
 
-Carol decides to add a menu for Mac and Cheese. She adds the macaroni, cheese and milk, and defines what quantities are required for the menu. She adds this menu to the current shopping list, and sees the three items she created added to the list.
+Carol decides to add a menu for Mac and Cheese. She adds the macaroni, cheese and milk, and defines what quantities are required for the menu. For each item, she is asked for the full details of brand, size, description and list of sources.
+
+She adds this menu to the current shopping list, and sees the three items she created added to the list. Each item has a special mark which, when clicked, tells Carol that this iem has been added for the Mac and Cheese menu; this information might be useful when deciding on quantities or substitutes in the store.
