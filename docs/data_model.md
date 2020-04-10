@@ -22,7 +22,7 @@ class ListItem {
   +int Id
   +string Name
   +List List
-  +Product Product
+  +Variant[] Variants
   +int Quantity
   +string Units
 }
@@ -67,7 +67,7 @@ class PackagingType {
 User --> Family
 List --> Family
 ListItem --> List
-ListItem --> Product
+ListItem --> Variant
 Ingredient --> Recipe
 Ingredient --> Product
 Variant --> Product
