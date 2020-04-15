@@ -6,7 +6,8 @@ import {
   IonButtons,
   IonAvatar,
   IonItem,
-  IonTabBar,
+  IonToolbar,
+  IonHeader,
 } from "@ionic/react";
 import { User } from "../models/User";
 
@@ -14,7 +15,7 @@ function drawAvatar(props: User) {
   return (
     <IonButtons slot="end">
       <IonItem>
-        <IonAvatar slot="start">
+        <IonAvatar>
           <img src={props.avatar} />
         </IonAvatar>
       </IonItem>
@@ -24,10 +25,12 @@ function drawAvatar(props: User) {
 
 const TopToolbar: React.FC<User> = (props) => {
   return (
-    <IonTabBar slot="top">
-      <IonTitle size="large">Forager</IonTitle>
-      {props.isLoggedIn ? drawAvatar(props) : ""}
-    </IonTabBar>
+    <IonHeader>
+      <IonToolbar>
+        <IonTitle size="large">Forager</IonTitle>
+        {props.isLoggedIn ? drawAvatar(props) : ""}
+      </IonToolbar>
+    </IonHeader>
   );
 };
 

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using forager.Data;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
@@ -9,8 +10,11 @@ namespace forager.Models
 {
   public class ApiUser
   {
+    public int Id { get; set; }
     public string Name { get; set; }
     public string Email { get; set; }
+
+    public ICollection<ApiFamily> Families { get; set; } = new List<ApiFamily>();
 
     private MD5 md5 = MD5.Create();
 
@@ -31,6 +35,14 @@ namespace forager.Models
         var result = sBuilder.ToString();
         return $"https://s.gravatar.com/avatar/{result}?d=identicon";
       }
+    }
+
+    public static ApiUser FromUser(User dataUser){
+      var user =  new ApiUser() { Id = dataUser.Id, Name = dataUser.Name, Email = dataUser.Email };
+      foreach(var family in dataUser.Families){
+        user.Families.Add(new ApiFamily() { Id = family.Id, Name = family.Name });
+      }
+      return user;
     }
 
   }

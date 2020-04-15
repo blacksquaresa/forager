@@ -1,4 +1,5 @@
 using forager.Authentication;
+using forager.Data;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
@@ -7,6 +8,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
@@ -27,7 +29,15 @@ namespace forager
     // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services)
     {
+      services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
       services.AddControllersWithViews();
+
+      services.AddDbContext<ForagerContext>(options =>
+      {
+        var connetionString = Configuration.GetConnectionString("ForagerConnection");
+        options.UseSqlServer(connetionString);
+      });
 
       services.AddAuthentication(options =>
       {
@@ -49,7 +59,6 @@ namespace forager
               configuration.RootPath = "client/build";
             });
 
-      services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -1,6 +1,10 @@
+import { Family } from './Family';
+
 export class User {
-  name: string = "";
-  email: string = "";
-  avatar: string = "";
+  id: number = 0;
+  name: string = '';
+  email: string = '';
+  avatar: string = '';
+  families: Family[] = [];
   isLoggedIn: boolean = false;
 }
