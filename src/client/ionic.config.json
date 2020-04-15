@@ -1,0 +1,7 @@
+{
+  "name": "forager",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react"
+}
