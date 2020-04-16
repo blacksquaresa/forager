@@ -7,7 +7,8 @@ import { fromJS, Map } from 'immutable';
 
 const initialState: DataContext = {
   users: [],
-  families: []
+  families: [],
+  invitations: []
 };
 
 const reducer = (
@@ -31,7 +32,8 @@ const reducer = (
           return st
             .set('currentUser', fromJS(currentUser))
             .updateIn(['users'], (users) => users.concat(fromJS(data.users)))
-            .updateIn(['families'], (families) => families.concat(fromJS(data.families)));
+            .updateIn(['families'], (families) => families.concat(fromJS(data.families)))
+            .updateIn(['invitations'], (invitations) => invitations.concat(fromJS(data.invitations)));
         });
         return newState;
       }

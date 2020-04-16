@@ -9,7 +9,11 @@ import {
   IonIcon,
   IonButton,
   IonCardContent,
-  IonAlert
+  IonAlert,
+  IonFab,
+  IonFabButton,
+  IonHeader,
+  IonTitle
 } from '@ionic/react';
 import { connect } from 'react-redux';
 import { DataContext } from '../models/DataContext';
@@ -17,7 +21,7 @@ import { User } from '../models/User';
 import TopToolbar from '../components/TopToolbar';
 import { Family } from '../models/Family';
 import FamilyCard from '../components/FamilyCard';
-import { personAdd } from 'ionicons/icons';
+import { personAdd, add } from 'ionicons/icons';
 import { addFamily } from '../store/actions';
 import { api } from '../App';
 import './Families.css';
@@ -95,6 +99,20 @@ const Families: React.FC<FamiliesProps> = (props) => {
     <IonPage>
       <TopToolbar />
       <IonContent>
+        <IonFab vertical="top" horizontal="end" slot="fixed">
+          <IonFabButton size="small">
+            <IonIcon icon={add} onClick={() => setCreateNewFamilyModalUp(true)} />
+          </IonFabButton>
+        </IonFab>
+        <IonCard>
+          <IonCardHeader>
+            <IonCardTitle>Families</IonCardTitle>
+          </IonCardHeader>
+          <IonCardContent>
+            Families are groups of people who share access to lists. All members of a family have equal rights to the
+            family's lists. All the families you are a member of are listed here.
+          </IonCardContent>
+        </IonCard>
         <div className="card-list">{drawFamilies(user!.families, family, setCreateNewFamilyModalUp)}</div>
       </IonContent>
       {createNewFamilyModalUp ? drawNewFamilyModal(setCreateNewFamilyModalUp) : ''}

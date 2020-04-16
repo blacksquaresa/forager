@@ -3,6 +3,7 @@ using forager.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Linq;
 using System.Security.Claims;
 
@@ -52,6 +53,24 @@ namespace forager.Controllers
       context.SaveChanges();
       var family = ApiFamily.FromFamily(existingFamily);
       return family;
+    }
+
+    [HttpPut]
+    [Route("{id}/members")]
+    public bool InviteNewMember(int id, [FromBody]string email)
+    {
+      var currentUser = context.GetCurrentUser(this.httpContextAccessor);
+      var existingFamily = context.Families.SingleOrDefault(f => f.Id == id);
+      var invitation = new Invitation()
+      {
+        Source = currentUser,
+        Family = existingFamily,
+        Email = email,
+        InvitedOn = DateTime.Now
+      };
+      context.Invitations.Add(invitation);
+      context.SaveChanges();
+      return true;
     }
   }
 }

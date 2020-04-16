@@ -16,6 +16,8 @@ namespace forager.Data
 
     public DbSet<Family> Families { get; set; }
 
+    public DbSet<Invitation> Invitations { get; set; }
+
     public DbSet<UserFamily> UserFamilies { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

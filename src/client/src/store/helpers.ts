@@ -4,6 +4,7 @@ import { Family } from '../models/Family';
 import { Mapped } from './types';
 import { List } from 'immutable';
 import store from './store';
+import { Invitation } from '../models/Invitation';
 
 export function isLoggedIn(state: Mapped<DataContext>): boolean {
   const isLoggedIn = state.get('currentUser')?.get('isLoggedIn');
@@ -28,6 +29,11 @@ export function getFamilies(state: Mapped<DataContext>): List<Mapped<Family>> {
 export function getUsers(state: Mapped<DataContext>): List<Mapped<User>> {
   const users = state.get('users') as List<Mapped<User>>;
   return users;
+}
+
+export function getInvitations(state: Mapped<DataContext>): List<Mapped<Invitation>> {
+  const invitations = state.get('invitations') as List<Mapped<Invitation>>;
+  return invitations;
 }
 
 export function toUser(source?: Mapped<User>): User | undefined {
@@ -70,4 +76,13 @@ export function toFamily(source?: Mapped<Family>): Family | undefined {
     family.members = actualMembers;
   }
   return family;
+}
+
+export function toInvitationArray(source?: List<Mapped<Invitation>>): Invitation[] | undefined {
+  if (!source) {
+    return undefined;
+  }
+
+  const list = source.toJS() as Invitation[];
+  return list;
 }

@@ -22,6 +22,11 @@ export class Api {
     return result as Family;
   }
 
+  public async inviteMemberToFamily(email: string, familyId: number) {
+    const result = await this.sendRequest(`family/${familyId}/members`, 'PUT', email);
+    return result as Family;
+  }
+
   private async sendRequest<T>(
     endpoint: string,
     method: RequestType = 'GET',

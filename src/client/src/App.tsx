@@ -2,9 +2,8 @@ import React from 'react';
 import { Redirect, Route } from 'react-router-dom';
 import { IonApp, IonIcon, IonLabel, IonRouterOutlet, IonTabBar, IonTabButton, IonTabs, IonLoading } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import { ellipse, triangle, people } from 'ionicons/icons';
+import { triangle, people, home } from 'ionicons/icons';
 import Home from './pages/Home';
-import CurrentUser from './pages/CurrentUser';
 import { connect } from 'react-redux';
 
 /* Core CSS required for Ionic components to work properly */
@@ -30,8 +29,10 @@ import { Api } from './services/Api';
 import { addInitialData } from './store/actions';
 import Families from './pages/Families';
 import { InitialData } from './models/InitialData';
-import { isLoggedIn } from './store/helpers';
+import { isLoggedIn, getInvitations } from './store/helpers';
 import { Mapped } from './store/types';
+import { List } from 'immutable';
+import { Invitation } from './models/Invitation';
 
 export const api = new Api('/api');
 
@@ -57,18 +58,13 @@ const App: React.FC<AppProps> = (props) => {
         <IonTabs>
           <IonRouterOutlet>
             <Route path="/home" component={Home} exact={true} />
-            <Route path="/user" component={CurrentUser} exact={true} />
             <Route path="/families" component={Families} exact={true} />
             <Route path="/" render={() => <Redirect to="/home" />} exact={true} />
           </IonRouterOutlet>
           <IonTabBar slot="bottom">
             <IonTabButton tab="home" href="/home">
-              <IonIcon icon={triangle} />
+              <IonIcon icon={home} />
               <IonLabel>Home</IonLabel>
-            </IonTabButton>
-            <IonTabButton tab="user" href="/user">
-              <IonIcon icon={ellipse} />
-              <IonLabel>Current User</IonLabel>
             </IonTabButton>
             <IonTabButton tab="families" href="/families">
               <IonIcon icon={people} />
