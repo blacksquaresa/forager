@@ -1,10 +1,11 @@
 import { Family } from './Family';
+import { List } from 'immutable';
 
-export class User {
-  id: number = 0;
-  name: string = '';
-  email: string = '';
-  avatar: string = '';
-  families: Family[] = [];
-  isLoggedIn: boolean = false;
-}
+export type User = {
+  id: number;
+  name: string;
+  email: string;
+  avatar: string;
+  families: Family[];
+  isLoggedIn: boolean;
+};

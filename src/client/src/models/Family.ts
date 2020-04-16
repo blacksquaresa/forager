@@ -1,4 +1,9 @@
-export class Family {
-  id: number = 0;
-  name: string = '';
-}
+import { User } from './User';
+import { List } from 'immutable';
+
+export type Family = {
+  id: number;
+  name: string;
+  creator: User;
+  members: User[];
+};

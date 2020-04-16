@@ -4,6 +4,8 @@ import { connect } from 'react-redux';
 import { DataContext } from '../models/DataContext';
 import { User } from '../models/User';
 import TopToolbar from '../components/TopToolbar';
+import { Mapped } from '../store/types';
+import { getCurrentUser } from '../store/helpers';
 
 const CurrentUser: React.FC<User> = (props) => {
   return (
@@ -22,8 +24,8 @@ const CurrentUser: React.FC<User> = (props) => {
   );
 };
 
-const mapStateToProps = (state: DataContext) => {
-  return state.user;
+const mapStateToProps = (state: Mapped<DataContext>) => {
+  return getCurrentUser(state);
 };
 
 export default connect(mapStateToProps)(CurrentUser);

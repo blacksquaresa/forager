@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react';
-import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
+import { IonContent, IonPage } from '@ionic/react';
 import { connect } from 'react-redux';
 import './Home.css';
 import TopToolbar from '../components/TopToolbar';
@@ -8,6 +8,9 @@ import { Redirect } from 'react-router';
 import { User } from '../models/User';
 import { Family } from '../models/Family';
 import FamilyCard from '../components/FamilyCard';
+import { getCurrentUser, getCurrentFamily, toUser, toFamily } from '../store/helpers';
+import { Mapped } from '../store/types';
+import { slug } from '../services/Utils';
 
 function drawNoFamilies(): ReactNode {
   return <Redirect to="families" />;
@@ -16,22 +19,24 @@ function drawNoFamilies(): ReactNode {
 function drawFamilies(families: Family[], selectedFamily?: Family): ReactNode {
   let result: JSX.Element[] = [];
   families.forEach((family) => {
-    result.push(<FamilyCard family={family} isSelected={family.id === selectedFamily?.id} />);
+    result.push(<FamilyCard family={family} isSelected={family.id === selectedFamily?.id} key={slug(family.name)} />);
   });
   return result;
 }
 
 function drawContent(props: HomeProps): ReactNode {
-  if (props.user.families?.length) {
-    return drawFamilies(props.user.families, props.family);
+  const user = toUser(props.user);
+  if (user?.families?.length) {
+    const family = toFamily(props.family);
+    return drawFamilies(user.families, family);
   }
 
   return drawNoFamilies();
 }
 
 type HomeProps = {
-  user: User;
-  family?: Family;
+  user: Mapped<User>;
+  family?: Mapped<Family>;
 };
 const Home: React.FC<HomeProps> = (props) => {
   return (
@@ -42,8 +47,8 @@ const Home: React.FC<HomeProps> = (props) => {
   );
 };
 
-const mapStateToProps = (state: DataContext) => {
-  return { user: state.user, family: state.family };
+const mapStateToProps = (state: Mapped<DataContext>) => {
+  return { user: getCurrentUser(state), selectedFamily: getCurrentFamily(state) };
 };
 
 export default connect(mapStateToProps)(Home);

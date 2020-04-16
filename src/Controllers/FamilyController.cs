@@ -35,9 +35,9 @@ namespace forager.Controllers
     public ApiFamily Put([FromBody]string name)
     {
       var currentUser = context.GetCurrentUser(this.httpContextAccessor);
-      var dataFamily = new Family() { Name = name };
+      var dataFamily = new Family() { Name = name, CreatorId = currentUser.Id };
       context.Families.Add(dataFamily);
-      currentUser.Families.Add(dataFamily);
+      context.LinkUserToFamily(currentUser, dataFamily);
       context.SaveChanges();
       var family = ApiFamily.FromFamily(dataFamily);
       return family;

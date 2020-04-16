@@ -1,5 +1,6 @@
 import { User } from '../models/User';
 import { Family } from '../models/Family';
+import { InitialData } from '../models/InitialData';
 
 type RequestType = 'GET' | 'PUT' | 'POST' | 'DELETE';
 
@@ -11,9 +12,9 @@ export class Api {
     return result;
   }
 
-  public async getCurrentUser(): Promise<User> {
+  public async getInitialData(): Promise<InitialData> {
     const result = await this.sendRequest('user');
-    return result as User;
+    return result as InitialData;
   }
 
   public async createFamily(name: string): Promise<Family> {

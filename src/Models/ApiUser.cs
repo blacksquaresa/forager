@@ -14,7 +14,7 @@ namespace forager.Models
     public string Name { get; set; }
     public string Email { get; set; }
 
-    public ICollection<ApiFamily> Families { get; set; } = new List<ApiFamily>();
+    public ICollection<int> Families { get; set; } = new List<int>();
 
     private MD5 md5 = MD5.Create();
 
@@ -40,7 +40,7 @@ namespace forager.Models
     public static ApiUser FromUser(User dataUser){
       var user =  new ApiUser() { Id = dataUser.Id, Name = dataUser.Name, Email = dataUser.Email };
       foreach(var family in dataUser.Families){
-        user.Families.Add(new ApiFamily() { Id = family.Id, Name = family.Name });
+        user.Families.Add(family.Id);
       }
       return user;
     }

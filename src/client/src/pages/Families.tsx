@@ -18,8 +18,13 @@ import TopToolbar from '../components/TopToolbar';
 import { Family } from '../models/Family';
 import FamilyCard from '../components/FamilyCard';
 import { personAdd } from 'ionicons/icons';
-import { addFamily } from '../store/actions/userActions';
+import { addFamily } from '../store/actions';
 import { api } from '../App';
+import './Families.css';
+import { getCurrentFamily, getCurrentUser, getFamilies, toUser, toFamily } from '../store/helpers';
+import { Mapped } from '../store/types';
+import { List } from 'immutable';
+import { slug } from '../services/Utils';
 
 function drawNewFamilyModal(showModal: Function): ReactNode {
   return (
@@ -71,32 +76,34 @@ function drawFamilies(families: Family[], selectedFamily: Family | undefined, cl
   }
   let result: JSX.Element[] = [];
   families.forEach((family) => {
-    result.push(<FamilyCard family={family} isSelected={family.id === selectedFamily?.id} />);
-    result.push(<FamilyCard family={family} isSelected={family.id === selectedFamily?.id} />);
-    result.push(<FamilyCard family={family} isSelected={family.id === selectedFamily?.id} />);
-    result.push(<FamilyCard family={family} isSelected={family.id === selectedFamily?.id} />);
+    result.push(<FamilyCard family={family} isSelected={family.id === selectedFamily?.id} key={slug(family.name)} />);
   });
   return result;
 }
 
 type FamiliesProps = {
-  user: User;
-  family?: Family;
+  user: Mapped<User>;
+  families: List<Mapped<Family>>;
+  selectedFamily?: Mapped<Family>;
   addFamily: (family: Family) => void;
 };
 const Families: React.FC<FamiliesProps> = (props) => {
   const [createNewFamilyModalUp, setCreateNewFamilyModalUp] = React.useState(false);
+  const user = toUser(props.user);
+  const family = toFamily(props.selectedFamily);
   return (
     <IonPage>
       <TopToolbar />
-      <IonContent>{drawFamilies(props.user.families, props.family, setCreateNewFamilyModalUp)}</IonContent>
+      <IonContent>
+        <div className="card-list">{drawFamilies(user!.families, family, setCreateNewFamilyModalUp)}</div>
+      </IonContent>
       {createNewFamilyModalUp ? drawNewFamilyModal(setCreateNewFamilyModalUp) : ''}
     </IonPage>
   );
 };
 
-const mapStateToProps = (state: DataContext) => {
-  return { user: state.user, selectedFamily: state.family };
+const mapStateToProps = (state: Mapped<DataContext>) => {
+  return { user: getCurrentUser(state), families: getFamilies(state), selectedFamily: getCurrentFamily(state) };
 };
 
 export default connect(mapStateToProps, { addFamily })(Families);

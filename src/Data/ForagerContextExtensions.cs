@@ -10,14 +10,29 @@ namespace forager.Data
 {
   public static class ForagerContextExtensions
   {
-    public static User GetCurrentUser(this ForagerContext context, string email){
-      var existingUser = context.Users.Include(u => u.Families).SingleOrDefault(u => u.Email == email);
+    public static User GetCurrentUser(this ForagerContext context, string email)
+    {
+      var existingUser = context
+        .Users
+        .Include(u => u.UserFamilies)
+        .ThenInclude(uf => uf.Family)
+        .SingleOrDefault(u => u.Email == email);
       return existingUser;
     }
     public static User GetCurrentUser(this ForagerContext context, IHttpContextAccessor httpContextAccessor)
     {
       var email = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Email).Value;
       return context.GetCurrentUser(email);
+    }
+
+    public static void LinkUserToFamily(this ForagerContext context, User user, Family family)
+    {
+      var userFamily = new UserFamily()
+      {
+        User = user,
+        Family = family
+      };
+      context.UserFamilies.Add(userFamily);
     }
   }
 }

@@ -2,7 +2,7 @@ import React from 'react';
 import { Redirect, Route } from 'react-router-dom';
 import { IonApp, IonIcon, IonLabel, IonRouterOutlet, IonTabBar, IonTabButton, IonTabs, IonLoading } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import { ellipse, square, triangle, people } from 'ionicons/icons';
+import { ellipse, triangle, people } from 'ionicons/icons';
 import Home from './pages/Home';
 import CurrentUser from './pages/CurrentUser';
 import { connect } from 'react-redux';
@@ -27,29 +27,27 @@ import '@ionic/react/css/display.css';
 import './theme/variables.css';
 import { DataContext } from './models/DataContext';
 import { Api } from './services/Api';
-import { User } from './models/User';
-import { setUser } from './store/actions/userActions';
+import { addInitialData } from './store/actions';
 import Families from './pages/Families';
+import { InitialData } from './models/InitialData';
+import { isLoggedIn } from './store/helpers';
+import { Mapped } from './store/types';
 
 export const api = new Api('/api');
 
-async function authenticateUser(): Promise<User> {
-  var user = await api.getCurrentUser();
-  return {
-    ...user,
-    isLoggedIn: true
-  };
+function authenticateUser(props: AppProps): void {
+  api.getInitialData().then((initialData: InitialData) => {
+    props.addInitialData(initialData);
+  });
 }
 
 type AppProps = {
   isLoggedIn: boolean;
-  setUser: (user: User) => void;
+  addInitialData: (data: InitialData) => void;
 };
 const App: React.FC<AppProps> = (props) => {
   if (!props.isLoggedIn) {
-    authenticateUser().then((user) => {
-      props.setUser(user);
-    });
+    authenticateUser(props);
     return <IonLoading isOpen={true} message={'Please wait...'} />;
   }
 
@@ -83,8 +81,8 @@ const App: React.FC<AppProps> = (props) => {
   );
 };
 
-const mapStateToProps = (state: DataContext) => {
-  return { isLoggedIn: state.user.isLoggedIn };
+const mapStateToProps = (state: Mapped<DataContext>) => {
+  return { isLoggedIn: isLoggedIn(state) };
 };
 
-export default connect(mapStateToProps, { setUser })(App);
+export default connect(mapStateToProps, { addInitialData })(App);

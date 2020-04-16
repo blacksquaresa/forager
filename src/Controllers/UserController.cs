@@ -23,7 +23,7 @@ namespace forager.Controllers
     }
 
     [HttpGet]
-    public ApiUser Get()
+    public UserApiGetResponse Get()
     {
       var email = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Email).Value;
 
@@ -36,8 +36,29 @@ namespace forager.Controllers
         context.SaveChanges();
       }
 
-      var user = ApiUser.FromUser(existingUser);
-      return user;
+      var response = UserApiGetResponse.FromUser(existingUser);
+      return response;
+    }
+  }
+
+  public class UserApiGetResponse
+  {
+    public int CurrentUser { get; set; }
+    public ApiUser[] Users { get; set; }
+    public ApiFamily[] Families { get; set; }
+
+    public static UserApiGetResponse FromUser(User user)
+    {
+      var response = new UserApiGetResponse()
+      {
+        CurrentUser = user.Id
+      };
+
+      response.Families = user.Families.Select(f => ApiFamily.FromFamily(f)).ToArray();
+
+      response.Users = user.Families.SelectMany(f => f.Members.Select(u => ApiUser.FromUser(u)).ToList()).ToArray();
+
+      return response;
     }
   }
 }
