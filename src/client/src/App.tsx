@@ -2,7 +2,7 @@ import React from 'react';
 import { Redirect, Route } from 'react-router-dom';
 import { IonApp, IonIcon, IonLabel, IonRouterOutlet, IonTabBar, IonTabButton, IonTabs, IonLoading } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import { triangle, people, home } from 'ionicons/icons';
+import { people, home } from 'ionicons/icons';
 import Home from './pages/Home';
 import { connect } from 'react-redux';
 
@@ -29,10 +29,8 @@ import { Api } from './services/Api';
 import { addInitialData } from './store/actions';
 import Families from './pages/Families';
 import { InitialData } from './models/InitialData';
-import { isLoggedIn, getInvitations } from './store/helpers';
+import { isLoggedIn } from './store/helpers';
 import { Mapped } from './store/types';
-import { List } from 'immutable';
-import { Invitation } from './models/Invitation';
 
 export const api = new Api('/api');
 

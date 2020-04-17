@@ -30,11 +30,31 @@ namespace forager.Data
     {
       var invitations = context
         .Invitations
+        .Where(i => i.Status == InvitationStatus.Invited)
         .Where(i => i.Email == user.Email)
         .Include(u => u.Source)
         .Include(u => u.Family)
         .ToList();
       return invitations;
+    }
+
+    public static Family AcceptInvitation(this ForagerContext context, int invitationId)
+    {
+      var invitation = context.Invitations
+        .Include(i => i.Family)
+        .ThenInclude(u => u.UserFamilies)
+        .ThenInclude(uf => uf.User)
+        .SingleOrDefault(f => f.Id == invitationId);
+      invitation.Status = InvitationStatus.Accepted;
+      invitation.ResolvedOn = DateTime.Now;
+      return invitation.Family;
+    }
+
+    public static void RejectInvitation(this ForagerContext context, int invitationId)
+    {
+      var invitation = context.Invitations.Include(i => i.Family).SingleOrDefault(f => f.Id == invitationId);
+      invitation.Status = InvitationStatus.Rejected;
+      invitation.ResolvedOn = DateTime.Now;
     }
 
     public static void LinkUserToFamily(this ForagerContext context, User user, Family family)

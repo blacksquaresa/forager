@@ -1,0 +1,8 @@
+.popover-content {
+  --width: auto;
+  --max-width: 90%;
+}
+
+.popover-content ion-item {
+  --inner-padding-bottom: 5px;
+}

@@ -1,4 +1,3 @@
-import { User } from '../models/User';
 import { Family } from '../models/Family';
 import { InitialData } from '../models/InitialData';
 
@@ -24,6 +23,16 @@ export class Api {
 
   public async inviteMemberToFamily(email: string, familyId: number) {
     const result = await this.sendRequest(`family/${familyId}/members`, 'PUT', email);
+    return result as Family;
+  }
+
+  public async acceptInvitation(invitationId: number) {
+    const result = await this.sendRequest(`invitation/${invitationId}/accept`, 'POST');
+    return result as Family;
+  }
+
+  public async rejectInvitation(invitationId: number) {
+    const result = await this.sendRequest(`invitation/${invitationId}/reject`, 'POST');
     return result as Family;
   }
 

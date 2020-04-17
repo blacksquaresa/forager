@@ -11,9 +11,7 @@ import {
   IonCardContent,
   IonAlert,
   IonFab,
-  IonFabButton,
-  IonHeader,
-  IonTitle
+  IonFabButton
 } from '@ionic/react';
 import { connect } from 'react-redux';
 import { DataContext } from '../models/DataContext';
@@ -24,11 +22,11 @@ import FamilyCard from '../components/FamilyCard';
 import { personAdd, add } from 'ionicons/icons';
 import { addFamily } from '../store/actions';
 import { api } from '../App';
-import './Families.css';
 import { getCurrentFamily, getCurrentUser, getFamilies, toUser, toFamily } from '../store/helpers';
 import { Mapped } from '../store/types';
 import { List } from 'immutable';
 import { slug } from '../services/Utils';
+import './Families.css';
 
 function drawNewFamilyModal(showModal: Function): ReactNode {
   return (

@@ -12,7 +12,7 @@ import {
   IonAlert
 } from '@ionic/react';
 import { Family } from '../models/Family';
-import { personAdd, person, checkmarkCircle, people } from 'ionicons/icons';
+import { personAdd, person, people } from 'ionicons/icons';
 import { api } from '../App';
 
 function drawThankYouAlert(showModal: Function): ReactNode {
@@ -66,9 +66,9 @@ function drawFamilyMembers(family: Family): ReactNode {
   let result: JSX.Element[] = [];
   family.members?.forEach((member) => {
     result.push(
-      <IonItem>
+      <IonItem key={member.id}>
         <IonAvatar>
-          <img src={member.avatar} />
+          <img src={member.avatar} alt={member.name} />
         </IonAvatar>
       </IonItem>
     );

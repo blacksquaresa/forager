@@ -1,6 +1,7 @@
 import { User } from '../models/User';
 import { Family } from '../models/Family';
 import { InitialData } from '../models/InitialData';
+import { Invitation } from '../models/Invitation';
 
 export const setUser = (user: User) => ({
   type: 'SET_USER',
@@ -20,6 +21,16 @@ export const addFamily = (family: Family) => ({
 export const addFamilies = (families: Family[]) => ({
   type: 'ADD_FAMILIES',
   payload: families
+});
+
+export const acceptInvitation = (invitation: Invitation, family: Family) => ({
+  type: 'ACCEPT_INVITATION',
+  payload: { family, invitation }
+});
+
+export const rejectInvitation = (invitation: Invitation) => ({
+  type: 'REJECT_INVITATION',
+  payload: invitation
 });
 
 export const addInitialData = (data: InitialData) => ({

@@ -1,9 +1,8 @@
-import { User } from '../models/User';
 import { Action, Mapped } from './types';
-import { Family } from '../models/Family';
 import { DataContext } from '../models/DataContext';
 import { InitialData } from '../models/InitialData';
-import { fromJS, Map } from 'immutable';
+import { fromJS } from 'immutable';
+import { Invitation } from '../models/Invitation';
 
 const initialState: DataContext = {
   users: [],
@@ -11,12 +10,9 @@ const initialState: DataContext = {
   invitations: []
 };
 
-const reducer = (
-  state: Mapped<DataContext> = fromJS(initialState),
-  action: Action<User | Family | User[] | Family[] | InitialData>
-) => {
+const reducer = (state: Mapped<DataContext> = fromJS(initialState), action: Action) => {
   switch (action.type) {
-    case 'ADD_USER': {
+    case 'SET_USER': {
       return state.updateIn(['users'], (users) => users.push(fromJS(action.payload)));
     }
     case 'ADD_FAMILY': {
@@ -38,6 +34,22 @@ const reducer = (
         return newState;
       }
       return state;
+    }
+    case 'ACCEPT_INVITATION': {
+      const newState = state.withMutations((st) => {
+        return st
+          .updateIn(['families'], (families) => families.push(fromJS(action.payload.family)))
+          .updateIn(['invitations'], (invitations) =>
+            invitations.filter((i: Mapped<Invitation>) => i.get('id') !== action.payload.invitation.id)
+          );
+      });
+      return newState;
+    }
+    case 'REJECT_INVITATION': {
+      const newState = state.updateIn(['invitations'], (invitations) =>
+        invitations.filter((i: Mapped<Invitation>) => i.get('id') !== action.payload.id)
+      );
+      return newState;
     }
     default: {
       return state;
