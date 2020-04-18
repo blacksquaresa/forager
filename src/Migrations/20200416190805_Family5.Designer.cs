@@ -5,9 +5,9 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using forager.Data;
+using Forager.Data;
 
-namespace forager.Migrations
+namespace Forager.Migrations
 {
     [DbContext(typeof(ForagerContext))]
     [Migration("20200416190805_Family5")]

@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace forager.Migrations
+namespace Forager.Migrations
 {
     public partial class Family5 : Migration
     {

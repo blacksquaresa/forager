@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace forager.Data
+namespace Forager.Data
 {
   public class UserFamily
   {

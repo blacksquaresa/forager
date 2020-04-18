@@ -1,30 +1,37 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.FileProviders;
+using Microsoft.AspNetCore.Http;
+using System;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
-namespace forager.Authentication
+namespace Forager.Authentication
 {
   public static partial class StartupExtensions
   {
-    public static void AuthenticateSPAFiles(this IApplicationBuilder branch, IWebHostEnvironment env)
+    public static void AuthenticateSPAFiles(this IApplicationBuilder branch)
     {
-      branch.Use(async (context, next) =>
-      {
-        if (!context.Request.Path.StartsWithSegments("/api") && !context.Request.Path.StartsWithSegments("/static"))
-        {
-          if (!context.User.Identity.IsAuthenticated)
-          {
-            await context.ChallengeAsync(new AuthenticationProperties()
-            {
-              RedirectUri = context.Request.PathBase + context.Request.Path + context.Request.QueryString
-            });
-            return;
-          }
-        }
+      branch.Use((context, next) => AuthenticateSPAFilesInternal(context.Request, context.User, context.ChallengeAsync, next));
+    }
 
-        await next();
-      });
+    internal static async Task AuthenticateSPAFilesInternal(HttpRequest request,
+                                                            ClaimsPrincipal user,
+                                                            Func<AuthenticationProperties, Task> challenge,
+                                                            Func<Task> next)
+    {
+      if (!request.Path.StartsWithSegments("/api") && !request.Path.StartsWithSegments("/static"))
+      {
+        if (!user.Identity.IsAuthenticated)
+        {
+          await challenge(new AuthenticationProperties()
+          {
+            RedirectUri = request.PathBase + request.Path + request.QueryString
+          });
+          return;
+        }
+      }
+
+      await next();
     }
   }
 }

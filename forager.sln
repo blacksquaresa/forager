@@ -3,12 +3,14 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30002.166
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "forager", "src\forager.csproj", "{95AB589B-68E3-4F84-B88C-FF0310008D50}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Forager", "src\Forager.csproj", "{95AB589B-68E3-4F84-B88C-FF0310008D50}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{DEDB7797-ADA6-43E5-B9E9-A4AED2632D1F}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forager.Test", "test\Forager.Test\Forager.Test.csproj", "{648825CC-7EF0-478A-B247-851DDF1FC7D6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -20,6 +22,10 @@ Global
 		{95AB589B-68E3-4F84-B88C-FF0310008D50}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{95AB589B-68E3-4F84-B88C-FF0310008D50}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{95AB589B-68E3-4F84-B88C-FF0310008D50}.Release|Any CPU.Build.0 = Release|Any CPU
+		{648825CC-7EF0-478A-B247-851DDF1FC7D6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{648825CC-7EF0-478A-B247-851DDF1FC7D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{648825CC-7EF0-478A-B247-851DDF1FC7D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{648825CC-7EF0-478A-B247-851DDF1FC7D6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

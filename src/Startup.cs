@@ -1,21 +1,17 @@
-using forager.Authentication;
-using forager.Data;
-using Microsoft.AspNetCore.Authentication;
+using Forager.Authentication;
+using Forager.Data;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
-using System.IO;
 
-namespace forager
+namespace Forager
 {
   public class Startup
   {
@@ -91,7 +87,7 @@ namespace forager
                   pattern: "{controller}/{action=Index}/{id?}");
       });
 
-      app.AuthenticateSPAFiles(env);
+      app.AuthenticateSPAFiles();
 
       app.UseSpa(spa =>
       {

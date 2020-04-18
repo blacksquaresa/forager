@@ -1,5 +1,5 @@
-﻿using forager.Data;
-using forager.Models;
+﻿using Forager.Data;
+using Forager.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 
-namespace forager.Controllers
+namespace Forager.Controllers
 {
   [Authorize]
   [ApiController]
