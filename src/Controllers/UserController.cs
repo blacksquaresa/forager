@@ -1,4 +1,5 @@
-﻿using Forager.Data;
+﻿using Forager.Authentication;
+using Forager.Data;
 using Forager.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -14,24 +15,23 @@ namespace Forager.Controllers
   [Route("api/[controller]")]
   public class UserController : ControllerBase
   {
-    private readonly IHttpContextAccessor httpContextAccessor;
+    private readonly IUserInformationService userInformation;
     private readonly ForagerContext context;
 
-    public UserController(IHttpContextAccessor httpContextAccessor, ForagerContext context)
+    public UserController(IUserInformationService userInformation, ForagerContext context)
     {
-      this.httpContextAccessor = httpContextAccessor;
+      this.userInformation = userInformation;
       this.context = context;
     }
 
     [HttpGet]
     public UserApiGetResponse Get()
     {
-      var email = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Email).Value;
-
-      var existingUser = context.GetCurrentUser(email);
+      var email = userInformation.GetUserEmail();
+      var existingUser = context.GetUserByEmail(email);
       if (existingUser == null)
       {
-        var name = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Name).Value;
+        var name = userInformation.GetUserName();
         existingUser = new User { Name = name, Email = email };
         context.Users.Add(existingUser);
         context.SaveChanges();
@@ -58,9 +58,14 @@ namespace Forager.Controllers
         CurrentUser = user.Id
       };
 
-      response.Families = user.Families.Select(f => ApiFamily.FromFamily(f)).ToArray();
+      response.Families = user.Families?.Select(f => ApiFamily.FromFamily(f)).ToArray() ?? new ApiFamily[] { };
 
-      response.Users = user.Families.SelectMany(f => f.Members.Select(u => ApiUser.FromUser(u)).ToList()).ToArray();
+      response.Users = user.Families
+        ?.SelectMany(f => f.Members)
+        .Distinct()
+        .Select(u => ApiUser.FromUser(u))        
+        .ToArray()
+         ?? new ApiUser[] { };
 
       response.Invitations = invitations != null ? invitations.Select(i => ApiInvitation.FromInvitation(i)).ToArray() : new ApiInvitation[] { };
 

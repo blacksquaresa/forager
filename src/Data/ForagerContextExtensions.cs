@@ -1,16 +1,16 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Forager.Exceptions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
-using System.Threading.Tasks;
 
 namespace Forager.Data
 {
   public static class ForagerContextExtensions
   {
-    public static User GetCurrentUser(this ForagerContext context, string email)
+    public static User GetUserByEmail(this ForagerContext context, string email)
     {
       var existingUser = context
         .Users
@@ -20,14 +20,11 @@ namespace Forager.Data
       return existingUser;
     }
 
-    public static User GetCurrentUser(this ForagerContext context, IHttpContextAccessor httpContextAccessor)
-    {
-      var email = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Email).Value;
-      return context.GetCurrentUser(email);
-    }
-
     public static IEnumerable<Invitation> GetInvitationsForUser(this ForagerContext context, User user)
     {
+      if(user == null){
+        return new Invitation[] { };
+      }
       var invitations = context
         .Invitations
         .Where(i => i.Status == InvitationStatus.Invited)
@@ -41,10 +38,23 @@ namespace Forager.Data
     public static Family AcceptInvitation(this ForagerContext context, int invitationId)
     {
       var invitation = context.Invitations
+        .Where(i => i.Status == InvitationStatus.Invited)
         .Include(i => i.Family)
         .ThenInclude(u => u.UserFamilies)
         .ThenInclude(uf => uf.User)
         .SingleOrDefault(f => f.Id == invitationId);
+
+      if(invitation == null){
+        throw new ForagerApiException(ForagerApiExceptionCode.InvitationNotFound);
+      }
+
+      var user = context.GetUserByEmail(invitation.Email);
+      if (user == null)
+      {
+        throw new ForagerApiException(ForagerApiExceptionCode.UserNotFound);
+      }
+
+      context.LinkUserToFamily(user, invitation.Family);
       invitation.Status = InvitationStatus.Accepted;
       invitation.ResolvedOn = DateTime.Now;
       return invitation.Family;
@@ -52,13 +62,32 @@ namespace Forager.Data
 
     public static void RejectInvitation(this ForagerContext context, int invitationId)
     {
-      var invitation = context.Invitations.Include(i => i.Family).SingleOrDefault(f => f.Id == invitationId);
+      var invitation = context.Invitations
+        .Where(i => i.Status == InvitationStatus.Invited)
+        .Include(i => i.Family)
+        .SingleOrDefault(f => f.Id == invitationId);
+
+      if (invitation == null)
+      {
+        throw new ForagerApiException(ForagerApiExceptionCode.InvitationNotFound);
+      }
+
       invitation.Status = InvitationStatus.Rejected;
       invitation.ResolvedOn = DateTime.Now;
     }
 
     public static void LinkUserToFamily(this ForagerContext context, User user, Family family)
     {
+      if (user == null)
+      {
+        throw new ForagerApiException(ForagerApiExceptionCode.UserNotFound);
+      }
+
+      if (family == null)
+      {
+        throw new ForagerApiException(ForagerApiExceptionCode.FamilyNotFound);
+      }
+
       var userFamily = new UserFamily()
       {
         User = user,

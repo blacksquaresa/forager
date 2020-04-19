@@ -14,12 +14,10 @@ namespace Forager.Controllers
   [Route("api/[controller]")]
   public class InvitationController : ControllerBase
   {
-    private readonly IHttpContextAccessor httpContextAccessor;
     private readonly ForagerContext context;
 
-    public InvitationController(IHttpContextAccessor httpContextAccessor, ForagerContext context)
+    public InvitationController(ForagerContext context)
     {
-      this.httpContextAccessor = httpContextAccessor;
       this.context = context;
     }
 

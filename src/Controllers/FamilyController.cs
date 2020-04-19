@@ -1,4 +1,5 @@
-﻿using Forager.Data;
+﻿using Forager.Authentication;
+using Forager.Data;
 using Forager.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -14,12 +15,12 @@ namespace Forager.Controllers
   [Route("api/[controller]")]
   public class FamilyController : ControllerBase
   {
-    private readonly IHttpContextAccessor httpContextAccessor;
+    private readonly IUserInformationService userInformation;
     private readonly ForagerContext context;
 
-    public FamilyController(IHttpContextAccessor httpContextAccessor, ForagerContext context)
+    public FamilyController(IUserInformationService userInformation, ForagerContext context)
     {
-      this.httpContextAccessor = httpContextAccessor;
+      this.userInformation = userInformation;
       this.context = context;
     }
 
@@ -35,7 +36,8 @@ namespace Forager.Controllers
     [HttpPut]
     public ApiFamily Put([FromBody]string name)
     {
-      var currentUser = context.GetCurrentUser(this.httpContextAccessor);
+      var currentUserEmail = userInformation.GetUserEmail();
+      var currentUser = context.GetUserByEmail(currentUserEmail);
       var dataFamily = new Family() { Name = name, CreatorId = currentUser.Id };
       context.Families.Add(dataFamily);
       context.LinkUserToFamily(currentUser, dataFamily);
@@ -59,7 +61,8 @@ namespace Forager.Controllers
     [Route("{id}/members")]
     public bool InviteNewMember(int id, [FromBody]string email)
     {
-      var currentUser = context.GetCurrentUser(this.httpContextAccessor);
+      var currentUserEmail = userInformation.GetUserEmail();
+      var currentUser = context.GetUserByEmail(currentUserEmail);
       var existingFamily = context.Families.SingleOrDefault(f => f.Id == id);
       var invitation = new Invitation()
       {
