@@ -4,14 +4,16 @@ using Forager.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Forager.Migrations
 {
     [DbContext(typeof(ForagerContext))]
-    partial class ForagerContextModelSnapshot : ModelSnapshot
+    [Migration("20200420185125_Lists1")]
+    partial class Lists1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -71,7 +73,7 @@ namespace Forager.Migrations
                     b.ToTable("Invitations");
                 });
 
-            modelBuilder.Entity("Forager.Data.ShoppingList", b =>
+            modelBuilder.Entity("Forager.Data.List", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -135,7 +137,7 @@ namespace Forager.Migrations
                         .HasForeignKey("SourceId");
                 });
 
-            modelBuilder.Entity("Forager.Data.ShoppingList", b =>
+            modelBuilder.Entity("Forager.Data.List", b =>
                 {
                     b.HasOne("Forager.Data.Family", "Family")
                         .WithMany("Lists")

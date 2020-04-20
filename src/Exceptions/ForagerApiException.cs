@@ -12,7 +12,8 @@ namespace Forager.Exceptions
       { ForagerApiExceptionCode.UserNotFound, "No user could be found for the credentials provided." },
       { ForagerApiExceptionCode.FamilyNotFound, "No family could be found for the Id provided." },
       { ForagerApiExceptionCode.InvalidNameProvided, "An invalid name was provided for this entity." },
-      { ForagerApiExceptionCode.InvalidEmailProvided, "An invalid email address was provided for this entity." }
+      { ForagerApiExceptionCode.InvalidEmailProvided, "An invalid email address was provided for this entity." },
+      { ForagerApiExceptionCode.ListNotFound, "No list could be found for the Id provided." }
     };
 
     public ForagerApiException(ForagerApiExceptionCode code) : base(messages[code])
@@ -34,6 +35,7 @@ namespace Forager.Exceptions
     UserNotFound = 1002,
     FamilyNotFound = 1003,
     InvalidNameProvided = 1004,
-    InvalidEmailProvided = 1005
+    InvalidEmailProvided = 1005,
+    ListNotFound = 1006
   }
 }

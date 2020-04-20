@@ -15,6 +15,8 @@ namespace Forager.Models
 
     public ICollection<int> Members { get; set; } = new List<int>();
 
+    public ICollection<int> Lists { get; set; } = new List<int>();
+
     public static ApiFamily FromFamily(Family dataFamily)
     {
       var family = new ApiFamily()
@@ -22,7 +24,8 @@ namespace Forager.Models
         Id = dataFamily.Id,
         Name = dataFamily.Name,
         Creator = dataFamily.Members.Single(u => u.Id == dataFamily.CreatorId).Id,
-        Members = dataFamily.Members.Select(u => u.Id).ToList()
+        Members = dataFamily.Members.Select(u => u.Id).ToList(),
+        Lists = dataFamily.Lists?.Select(u => u.Id).ToList()
       };
       return family;
     }

@@ -29,7 +29,7 @@ import { Api } from './services/Api';
 import { addInitialData } from './store/actions';
 import Families from './pages/Families';
 import { InitialData } from './models/InitialData';
-import { isLoggedIn } from './store/helpers';
+import helpers from './store/helpers';
 import { Mapped } from './store/types';
 
 export const api = new Api('/api');
@@ -44,7 +44,7 @@ type AppProps = {
   isLoggedIn: boolean;
   addInitialData: (data: InitialData) => void;
 };
-const App: React.FC<AppProps> = (props) => {
+export const App: React.FC<AppProps> = (props) => {
   if (!props.isLoggedIn) {
     authenticateUser(props);
     return <IonLoading isOpen={true} message={'Please wait...'} />;
@@ -76,7 +76,7 @@ const App: React.FC<AppProps> = (props) => {
 };
 
 const mapStateToProps = (state: Mapped<DataContext>) => {
-  return { isLoggedIn: isLoggedIn(state) };
+  return { isLoggedIn: helpers.isLoggedIn(state) };
 };
 
 export default connect(mapStateToProps, { addInitialData })(App);

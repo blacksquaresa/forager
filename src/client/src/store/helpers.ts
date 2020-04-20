@@ -86,3 +86,15 @@ export function toInvitationArray(source?: List<Mapped<Invitation>>): Invitation
   const list = source.toJS() as Invitation[];
   return list;
 }
+
+export default {
+  isLoggedIn,
+  getCurrentUser,
+  getCurrentFamily,
+  getFamilies,
+  getUsers,
+  getInvitations,
+  toUser,
+  toFamily,
+  toInvitationArray
+};

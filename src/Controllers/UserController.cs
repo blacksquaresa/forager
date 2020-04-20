@@ -50,6 +50,7 @@ namespace Forager.Controllers
     public ApiUser[] Users { get; set; }
     public ApiFamily[] Families { get; set; }
     public ApiInvitation[] Invitations { get; set; }
+    public ApiList[] Lists { get; set; }
 
     public static UserApiGetResponse FromUser(User user, IEnumerable<Invitation> invitations = null)
     {
@@ -63,11 +64,20 @@ namespace Forager.Controllers
       response.Users = user.Families
         ?.SelectMany(f => f.Members)
         .Distinct()
-        .Select(u => ApiUser.FromUser(u))        
+        .Select(u => ApiUser.FromUser(u))
         .ToArray()
          ?? new ApiUser[] { };
 
-      response.Invitations = invitations != null ? invitations.Select(i => ApiInvitation.FromInvitation(i)).ToArray() : new ApiInvitation[] { };
+      response.Invitations = invitations != null
+         ? invitations.Select(i => ApiInvitation.FromInvitation(i)).ToArray()
+         : new ApiInvitation[] { };
+
+      response.Lists = user.Families
+        ?.SelectMany(f => f.Lists ?? new ShoppingList[] { })
+        .Distinct()
+        .Select(l => ApiList.FromList(l))
+        .ToArray()
+         ?? new ApiList[] { };
 
       return response;
     }

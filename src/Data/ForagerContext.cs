@@ -20,6 +20,8 @@ namespace Forager.Data
 
     public DbSet<UserFamily> UserFamilies { get; set; }
 
+    public DbSet<ShoppingList> Lists { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
       modelBuilder.Entity<UserFamily>()

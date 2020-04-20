@@ -7,7 +7,8 @@ import { Invitation } from '../models/Invitation';
 const initialState: DataContext = {
   users: [],
   families: [],
-  invitations: []
+  invitations: [],
+  lists: []
 };
 
 const reducer = (state: Mapped<DataContext> = fromJS(initialState), action: Action) => {
@@ -29,7 +30,8 @@ const reducer = (state: Mapped<DataContext> = fromJS(initialState), action: Acti
             .set('currentUser', fromJS(currentUser))
             .updateIn(['users'], (users) => users.concat(fromJS(data.users)))
             .updateIn(['families'], (families) => families.concat(fromJS(data.families)))
-            .updateIn(['invitations'], (invitations) => invitations.concat(fromJS(data.invitations)));
+            .updateIn(['invitations'], (invitations) => invitations.concat(fromJS(data.invitations)))
+            .updateIn(['lists'], (lists) => lists.concat(fromJS(data.lists)));
         });
         return newState;
       }

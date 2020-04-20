@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Forager.Data
 {
@@ -14,6 +12,8 @@ namespace Forager.Data
     public int CreatorId { get; set; }
 
     public ICollection<UserFamily> UserFamilies { get; set; }
+
+    public ICollection<ShoppingList> Lists { get; set; }
 
     [NotMapped]
     public ICollection<User> Members

@@ -1,17 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { DataContext } from '../models/DataContext';
-import {
-  IonTitle,
-  IonButtons,
-  IonAvatar,
-  IonItem,
-  IonToolbar,
-  IonHeader,
-  IonButton,
-  IonBadge,
-  IonIcon
-} from '@ionic/react';
+import { IonTitle, IonButtons, IonToolbar, IonHeader, IonButton, IonBadge, IonIcon } from '@ionic/react';
 import { User } from '../models/User';
 import { getCurrentUser, getInvitations, toUser, toInvitationArray } from '../store/helpers';
 import { Mapped } from '../store/types';
@@ -19,6 +9,7 @@ import { List } from 'immutable';
 import { Invitation } from '../models/Invitation';
 import { people } from 'ionicons/icons';
 import InvitationsPopover from './InvitationsPopover';
+import Avatar from './Avatar';
 
 function drawInvitationBadge(invitations: Invitation[], setInvitationsClickEvent: Function) {
   return (
@@ -37,16 +28,6 @@ function drawInvitationBadge(invitations: Invitation[], setInvitationsClickEvent
   );
 }
 
-function drawAvatar(user: User) {
-  return (
-    <IonItem>
-      <IonAvatar>
-        <img src={user.avatar} alt={user.name} />
-      </IonAvatar>
-    </IonItem>
-  );
-}
-
 function drawButtons(setInvitationsClickEvent: Function, user?: User, invitations?: Invitation[]) {
   if (!user && !invitations?.length) {
     return '';
@@ -54,7 +35,7 @@ function drawButtons(setInvitationsClickEvent: Function, user?: User, invitation
   return (
     <IonButtons slot="end">
       {invitations?.length ? drawInvitationBadge(invitations, setInvitationsClickEvent) : ''}
-      {user?.isLoggedIn ? drawAvatar(user) : ''}
+      {user?.isLoggedIn ? <Avatar member={user} /> : ''}
     </IonButtons>
   );
 }

@@ -1,6 +1,7 @@
 import { User } from './User';
 import { Family } from './Family';
 import { Invitation } from './Invitation';
+import { List } from './List';
 
 export type DataContext = {
   currentUser?: User;
@@ -8,4 +9,5 @@ export type DataContext = {
   users: User[];
   families: Family[];
   invitations: Invitation[];
+  lists: List[];
 };

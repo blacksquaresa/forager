@@ -1,14 +1,14 @@
 import React from 'react';
-import { render } from '@testing-library/react';
-import App from './App';
-import store from './store/store';
-import { Provider } from 'react-redux';
+import { shallow } from 'enzyme';
+import { App } from './App';
+import { InitialData } from './models/InitialData';
 
 test('renders without crashing', () => {
-  const { baseElement } = render(
-    <Provider store={store}>
-      <App />
-    </Provider>
-  );
-  expect(baseElement).toBeDefined();
+  const props = {
+    isLoggedIn: true,
+    addInitialData: (data: InitialData) => {}
+  };
+
+  const { instance } = shallow(<App {...props} />);
+  expect(instance).toBeDefined();
 });

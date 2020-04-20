@@ -8,72 +8,36 @@ import {
   IonLabel,
   IonToolbar,
   IonButtons,
-  IonAvatar,
-  IonAlert
+  IonChip,
+  IonButton
 } from '@ionic/react';
 import { Family } from '../models/Family';
-import { personAdd, person, people } from 'ionicons/icons';
-import { api } from '../App';
+import { personAdd, person, people, listCircle, list, add, addCircle, addCircleOutline } from 'ionicons/icons';
+import ThankYouAlert from '../alerts/ThankYouAlert';
+import NewMemberAlert from '../alerts/NewMemberAlert';
+import Avatar from './Avatar';
+import NewListAlert from '../alerts/NewListAlert';
 
-function drawThankYouAlert(showModal: Function): ReactNode {
-  return (
-    <IonAlert
-      isOpen={true}
-      header="Thank You"
-      message="Thank you for your invitation. It has been registered, and your invitee will receive it the next time they log in."
-      buttons={[
-        {
-          text: 'Close',
-          handler: async () => {
-            showModal(false);
-          }
-        }
-      ]}
-    />
-  );
-}
-
-function drawNewMemberModal(showModal: Function, familyId: number, showThankYou: Function): ReactNode {
-  return (
-    <IonAlert
-      isOpen={true}
-      header="Invite a new Member"
-      message="Invite a new member to join this family by entering their email address."
-      inputs={[{ name: 'email', type: 'email', placeholder: 'Enter the email address' }]}
-      buttons={[
-        {
-          text: 'Cancel',
-          role: 'cancel',
-          cssClass: 'secondary',
-          handler: () => {
-            showModal(false);
-          }
-        },
-        {
-          text: 'Send Invitation',
-          handler: async (data) => {
-            await api.inviteMemberToFamily(data.email, familyId);
-            showThankYou(true);
-            showModal(false);
-          }
-        }
-      ]}
-    />
-  );
+function drawLists(family: Family): ReactNode {
+  let result: JSX.Element[] = [];
+  family.lists?.forEach((list) => {
+    result.push(
+      <IonButton key={list.id}>
+        <IonChip>
+          <IonIcon icon={listCircle} />
+          <IonLabel>{list.name}</IonLabel>
+        </IonChip>
+      </IonButton>
+    );
+  });
+  return result;
 }
 
 function drawFamilyMembers(family: Family): ReactNode {
   let result: JSX.Element[] = [];
   family.members?.forEach((member) => {
-    result.push(
-      <IonItem key={member.id}>
-        <IonAvatar>
-          <img src={member.avatar} alt={member.name} />
-        </IonAvatar>
-      </IonItem>
-    );
+    result.push(<Avatar member={member} key={member.id} />);
   });
-
   return result;
 }
 
@@ -85,26 +49,67 @@ type FamilyCardProps = {
 const FamilyCard: React.FC<FamilyCardProps> = (props) => {
   const color = props.isSelected ? 'primary' : 'secondary';
   const [inviteNewMemberShowing, setinviteNewMemberShowing] = React.useState(false);
+  const [AddNewListShowing, setAddNewListShowing] = React.useState(false);
   const [thankYouShowing, setthankYouShowing] = React.useState(false);
   return (
     <IonCard>
       <IonCardHeader color={color}>
         <IonItem color={color}>
           <IonIcon icon={people} size="large" slot="start" />
-          <IonCardTitle>{props.family.name} Family</IonCardTitle>
+          <IonCardTitle>{props.family.name}</IonCardTitle>
         </IonItem>
       </IonCardHeader>
 
       <IonItem>
         <IonIcon icon={person} slot="start" />
-        <IonLabel>Members</IonLabel>
+        <IonLabel>Members ({props.family.members?.length || 0})</IonLabel>
         <IonIcon icon={personAdd} slot="end" title="Add new member" onClick={() => setinviteNewMemberShowing(true)} />
       </IonItem>
       <IonToolbar>
         <IonButtons slot="start">{drawFamilyMembers(props.family)}</IonButtons>
       </IonToolbar>
-      {inviteNewMemberShowing ? drawNewMemberModal(setinviteNewMemberShowing, props.family.id, setthankYouShowing) : ''}
-      {thankYouShowing ? drawThankYouAlert(setthankYouShowing) : ''}
+
+      <IonItem>
+        <IonIcon icon={list} slot="start" />
+        <IonLabel>Lists ({props.family.lists?.length || 0})</IonLabel>
+        <IonIcon icon={addCircleOutline} slot="end" title="Add new list" onClick={() => setAddNewListShowing(true)} />
+      </IonItem>
+      <IonToolbar>
+        <IonButtons slot="start">{drawLists(props.family)}</IonButtons>
+      </IonToolbar>
+
+      {inviteNewMemberShowing ? (
+        <NewMemberAlert
+          familyId={props.family.id}
+          successFunction={() => {
+            setthankYouShowing(true);
+            setinviteNewMemberShowing(false);
+          }}
+          closeFunction={() => setinviteNewMemberShowing(false)}
+        />
+      ) : (
+        ''
+      )}
+
+      {AddNewListShowing ? (
+        <NewListAlert
+          family={props.family}
+          successFunction={() => {
+            setAddNewListShowing(false);
+          }}
+          closeFunction={() => setAddNewListShowing(false)}
+        />
+      ) : (
+        ''
+      )}
+      {thankYouShowing ? (
+        <ThankYouAlert
+          onClose={() => setthankYouShowing(false)}
+          message="Thank you for your invitation. It has been registered, and your invitee will receive it the next time they log in."
+        />
+      ) : (
+        ''
+      )}
     </IonCard>
   );
 };
