@@ -1,0 +1,3 @@
+*.testlog
+test/Forager.Test/bin/
+test/Forager.Test/obj/

@@ -1,12 +1,12 @@
 ﻿using Forager.Authentication;
 using Forager.Data;
+using Forager.Exceptions;
 using Forager.Models;
+using Forager.Services;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Linq;
-using System.Security.Claims;
 
 namespace Forager.Controllers
 {
@@ -29,6 +29,11 @@ namespace Forager.Controllers
     public ApiFamily Get(int id)
     {
       var existingFamily = context.Families.SingleOrDefault(f => f.Id == id);
+      if (existingFamily == null)
+      {
+        throw new ForagerApiException(ForagerApiExceptionCode.FamilyNotFound);
+      }
+
       var family = ApiFamily.FromFamily(existingFamily);
       return family;
     }
@@ -36,9 +41,13 @@ namespace Forager.Controllers
     [HttpPut]
     public ApiFamily Put([FromBody]string name)
     {
+      if(string.IsNullOrWhiteSpace(name)){
+        throw new ForagerApiException(ForagerApiExceptionCode.InvalidNameProvided);
+      }
+
       var currentUserEmail = userInformation.GetUserEmail();
       var currentUser = context.GetUserByEmail(currentUserEmail);
-      var dataFamily = new Family() { Name = name, CreatorId = currentUser.Id };
+      var dataFamily = new Family() { Name = name.Trim(), CreatorId = currentUser.Id };
       context.Families.Add(dataFamily);
       context.LinkUserToFamily(currentUser, dataFamily);
       context.SaveChanges();
@@ -50,8 +59,18 @@ namespace Forager.Controllers
     [Route("{id}")]
     public ApiFamily Post(int id, [FromBody]string name)
     {
+      if (string.IsNullOrWhiteSpace(name))
+      {
+        throw new ForagerApiException(ForagerApiExceptionCode.InvalidNameProvided);
+      }
+
       var existingFamily = context.Families.SingleOrDefault(f => f.Id == id);
-      existingFamily.Name = name;
+      if (existingFamily == null)
+      {
+        throw new ForagerApiException(ForagerApiExceptionCode.FamilyNotFound);
+      }
+
+      existingFamily.Name = name.Trim();
       context.SaveChanges();
       var family = ApiFamily.FromFamily(existingFamily);
       return family;
@@ -61,14 +80,24 @@ namespace Forager.Controllers
     [Route("{id}/members")]
     public bool InviteNewMember(int id, [FromBody]string email)
     {
+      if (!email.IsValidEmail())
+      {
+        throw new ForagerApiException(ForagerApiExceptionCode.InvalidEmailProvided);
+      }
+
       var currentUserEmail = userInformation.GetUserEmail();
       var currentUser = context.GetUserByEmail(currentUserEmail);
       var existingFamily = context.Families.SingleOrDefault(f => f.Id == id);
+      if (existingFamily == null)
+      {
+        throw new ForagerApiException(ForagerApiExceptionCode.FamilyNotFound);
+      }
+
       var invitation = new Invitation()
       {
         Source = currentUser,
         Family = existingFamily,
-        Email = email,
+        Email = email.Trim(),
         InvitedOn = DateTime.Now
       };
       context.Invitations.Add(invitation);
