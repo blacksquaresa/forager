@@ -16,6 +16,7 @@ namespace Forager.Data
         .Users
         .Include(u => u.UserFamilies)
         .ThenInclude(uf => uf.Family)
+        .ThenInclude(f => f.Lists)
         .SingleOrDefault(u => u.Email == email);
       return existingUser;
     }
