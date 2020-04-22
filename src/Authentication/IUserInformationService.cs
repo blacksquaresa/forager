@@ -10,5 +10,7 @@ namespace Forager.Authentication
     public string GetUserEmail();
 
     public string GetUserName();
+
+    public string GetPicture();
   }
 }

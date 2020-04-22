@@ -9,10 +9,10 @@ import {
   IonToolbar,
   IonButtons,
   IonChip,
-  IonButton
+  IonRouterLink
 } from '@ionic/react';
 import { Family } from '../models/Family';
-import { personAdd, person, people, listCircle, list, add, addCircle, addCircleOutline } from 'ionicons/icons';
+import { personAdd, person, people, listCircle, list, addCircleOutline } from 'ionicons/icons';
 import ThankYouAlert from '../alerts/ThankYouAlert';
 import NewMemberAlert from '../alerts/NewMemberAlert';
 import Avatar from './Avatar';
@@ -22,12 +22,12 @@ function drawLists(family: Family): ReactNode {
   let result: JSX.Element[] = [];
   family.lists?.forEach((list) => {
     result.push(
-      <IonButton key={list.id}>
+      <IonRouterLink key={list.id} href={`/list/${list.id}`}>
         <IonChip>
           <IonIcon icon={listCircle} />
           <IonLabel>{list.name}</IonLabel>
         </IonChip>
-      </IonButton>
+      </IonRouterLink>
     );
   });
   return result;

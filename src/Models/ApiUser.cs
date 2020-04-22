@@ -13,16 +13,15 @@ namespace Forager.Models
     public int Id { get; set; }
     public string Name { get; set; }
     public string Email { get; set; }
+    public string Avatar { get; set; }
 
     public ICollection<int> Families { get; set; } = new List<int>();
 
-    private MD5 md5 = MD5.Create();
+    private static MD5 md5 = MD5.Create();
 
-    public string Avatar
+    public static string GetAvatar(User dataUser)
     {
-      get
-      {
-        var source = this.Email.Trim().ToLowerInvariant();
+        var source = dataUser.Email.Trim().ToLowerInvariant();
         var data = md5.ComputeHash(Encoding.UTF8.GetBytes(source));
 
         var sBuilder = new StringBuilder();
@@ -34,12 +33,12 @@ namespace Forager.Models
 
         var result = sBuilder.ToString();
         return $"https://s.gravatar.com/avatar/{result}?d=identicon";
-      }
     }
 
     public static ApiUser FromUser(User dataUser){
       var user =  new ApiUser() { Id = dataUser.Id, Name = dataUser.Name, Email = dataUser.Email };
-      foreach(var family in dataUser.Families){
+      user.Avatar = string.IsNullOrEmpty(dataUser.Picture) ? ApiUser.GetAvatar(dataUser) : dataUser.Picture;
+      foreach (var family in dataUser.Families){
         user.Families.Add(family.Id);
       }
       return user;

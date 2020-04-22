@@ -32,7 +32,8 @@ namespace Forager.Controllers
       if (existingUser == null)
       {
         var name = userInformation.GetUserName();
-        existingUser = new User { Name = name, Email = email };
+        var picture = userInformation.GetPicture();
+        existingUser = new User { Name = name, Email = email, Picture = picture };
         context.Users.Add(existingUser);
         context.SaveChanges();
       }

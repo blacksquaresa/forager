@@ -31,6 +31,7 @@ import Families from './pages/Families';
 import { InitialData } from './models/InitialData';
 import helpers from './store/helpers';
 import { Mapped } from './store/types';
+import ShoppingList from './pages/ShoppingList';
 
 export const api = new Api('/api');
 
@@ -57,6 +58,7 @@ export const App: React.FC<AppProps> = (props) => {
           <IonRouterOutlet>
             <Route path="/home" component={Home} exact={true} />
             <Route path="/families" component={Families} exact={true} />
+            <Route path="/list/:id" component={ShoppingList} />
             <Route path="/" render={() => <Redirect to="/home" />} exact={true} />
           </IonRouterOutlet>
           <IonTabBar slot="bottom">

@@ -63,6 +63,15 @@ export function toFamily(source?: Mapped<Family>): Family | undefined {
   return family;
 }
 
+export function toList(source?: Mapped<ShoppingList>): ShoppingList | undefined {
+  if (!source) {
+    return undefined;
+  }
+
+  const list = source.toJS() as ShoppingList;
+  return list;
+}
+
 export function toInvitationArray(source?: List<Mapped<Invitation>>): Invitation[] | undefined {
   if (!source) {
     return undefined;
@@ -106,9 +115,11 @@ export default {
   getCurrentUser,
   getCurrentFamily,
   getFamilies,
+  getLists,
   getUsers,
   getInvitations,
   toUser,
   toFamily,
+  toList,
   toInvitationArray
 };

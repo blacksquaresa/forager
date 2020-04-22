@@ -20,5 +20,10 @@ namespace Forager.Authentication
     {
       return httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Name).Value;
     }
+
+    public string GetPicture()
+    {
+      return httpContextAccessor.HttpContext.User.FindFirst("piicture").Value;
+    }
   }
 }
