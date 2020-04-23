@@ -11,6 +11,7 @@ namespace Forager.Models
     public int Id { get; set; }
     public string Name { get; set; }
     public int Family { get; set; }
+    public ApiListItem[] Items { get; set; }
 
     public static ApiList FromList(ShoppingList dataList)
     {
@@ -20,6 +21,10 @@ namespace Forager.Models
         Name = dataList.Name,
         Family = dataList.Family.Id
       };
+
+      if(dataList.Items != null){
+        list.Items = dataList.Items.Select(i => ApiListItem.FromItem(i)).ToArray();
+      }
       return list;
     }
   }

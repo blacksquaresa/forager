@@ -4,14 +4,16 @@ using Forager.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Forager.Migrations
 {
     [DbContext(typeof(ForagerContext))]
-    partial class ForagerContextModelSnapshot : ModelSnapshot
+    [Migration("20200423183619_Product1")]
+    partial class Product1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -69,32 +71,6 @@ namespace Forager.Migrations
                     b.HasIndex("SourceId");
 
                     b.ToTable("Invitations");
-                });
-
-            modelBuilder.Entity("Forager.Data.ListItem", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int?>("ListId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Units")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ListId");
-
-                    b.ToTable("ListItem");
                 });
 
             modelBuilder.Entity("Forager.Data.Product", b =>
@@ -204,9 +180,6 @@ namespace Forager.Migrations
                     b.Property<string>("ImagePath")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("ListItemId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
@@ -224,8 +197,6 @@ namespace Forager.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ListItemId");
-
                     b.HasIndex("ProductId");
 
                     b.ToTable("Variant");
@@ -240,13 +211,6 @@ namespace Forager.Migrations
                     b.HasOne("Forager.Data.User", "Source")
                         .WithMany()
                         .HasForeignKey("SourceId");
-                });
-
-            modelBuilder.Entity("Forager.Data.ListItem", b =>
-                {
-                    b.HasOne("Forager.Data.ShoppingList", "List")
-                        .WithMany("Items")
-                        .HasForeignKey("ListId");
                 });
 
             modelBuilder.Entity("Forager.Data.ShoppingList", b =>
@@ -280,10 +244,6 @@ namespace Forager.Migrations
 
             modelBuilder.Entity("Forager.Data.Variant", b =>
                 {
-                    b.HasOne("Forager.Data.ListItem", null)
-                        .WithMany("Variants")
-                        .HasForeignKey("ListItemId");
-
                     b.HasOne("Forager.Data.Product", "Product")
                         .WithMany("Variants")
                         .HasForeignKey("ProductId");

@@ -22,6 +22,10 @@ namespace Forager.Data
 
     public DbSet<ShoppingList> Lists { get; set; }
 
+    public DbSet<Product> Products { get; set; }
+
+    public DbSet<Source> Sources { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
       modelBuilder.Entity<UserFamily>()
