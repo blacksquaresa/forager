@@ -4,14 +4,16 @@ using Forager.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Forager.Migrations
 {
     [DbContext(typeof(ForagerContext))]
-    partial class ForagerContextModelSnapshot : ModelSnapshot
+    [Migration("20200426072929_Product3")]
+    partial class Product3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -40,14 +42,6 @@ namespace Forager.Migrations
                     b.HasIndex("CreatedById");
 
                     b.ToTable("Families");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            CreatedOn = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Name = "Universal Family"
-                        });
                 });
 
             modelBuilder.Entity("Forager.Data.FamilyProducts", b =>

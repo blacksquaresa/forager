@@ -64,6 +64,7 @@ namespace Forager.Controllers
 
       response.Users = user.Families
         ?.SelectMany(f => f.Members)
+        .Concat(new [] { user })
         .Distinct()
         .Select(u => ApiUser.FromUser(u))
         .ToArray()

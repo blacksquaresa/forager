@@ -13,7 +13,8 @@ namespace Forager.Exceptions
       { ForagerApiExceptionCode.FamilyNotFound, "No family could be found for the Id provided." },
       { ForagerApiExceptionCode.InvalidNameProvided, "An invalid name was provided for this entity." },
       { ForagerApiExceptionCode.InvalidEmailProvided, "An invalid email address was provided for this entity." },
-      { ForagerApiExceptionCode.ListNotFound, "No list could be found for the Id provided." }
+      { ForagerApiExceptionCode.ListNotFound, "No list could be found for the Id provided." },
+      { ForagerApiExceptionCode.ProductNotFound, "No product could be found for the Id provided." }
     };
 
     public ForagerApiException(ForagerApiExceptionCode code) : base(messages[code])
@@ -36,6 +37,7 @@ namespace Forager.Exceptions
     FamilyNotFound = 1003,
     InvalidNameProvided = 1004,
     InvalidEmailProvided = 1005,
-    ListNotFound = 1006
+    ListNotFound = 1006,
+    ProductNotFound = 1007
   }
 }

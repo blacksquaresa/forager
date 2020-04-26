@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { DataContext } from '../models/DataContext';
 import { IonTitle, IonButtons, IonToolbar, IonHeader, IonButton, IonBadge, IonIcon } from '@ionic/react';
 import { User } from '../models/User';
-import { getCurrentUser, getInvitations, toUser, toInvitationArray } from '../store/helpers';
+import helpers from '../store/helpers';
 import { Mapped } from '../store/types';
 import { List } from 'immutable';
 import { Invitation } from '../models/Invitation';
@@ -45,8 +45,8 @@ type TopToolbarProps = {
   invitations: List<Mapped<Invitation>>;
 };
 const TopToolbar: React.FC<TopToolbarProps> = (props) => {
-  const user = toUser(props.user);
-  const invitations = toInvitationArray(props.invitations);
+  const user = helpers.toUser(props.user);
+  const invitations = helpers.toArray(props.invitations);
   const [invitationsClickEvent, setInvitationsClickEvent] = React.useState<Event | null>(null);
   return (
     <IonHeader>
@@ -65,7 +65,7 @@ const TopToolbar: React.FC<TopToolbarProps> = (props) => {
 };
 
 const mapStateToProps = (state: Mapped<DataContext>) => {
-  return { user: getCurrentUser(state), invitations: getInvitations(state) };
+  return { user: helpers.getCurrentUser(state), invitations: helpers.getInvitations(state) };
 };
 
 export default connect(mapStateToProps)(TopToolbar);

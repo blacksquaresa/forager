@@ -3,6 +3,7 @@ import { IonAlert } from '@ionic/react';
 import { api } from '../App';
 
 type NewMemberAlertProps = {
+  isOpen: boolean;
   familyId: number;
   successFunction: () => void;
   closeFunction: () => void;
@@ -10,7 +11,7 @@ type NewMemberAlertProps = {
 const NewMemberAlert: React.FC<NewMemberAlertProps> = (props) => {
   return (
     <IonAlert
-      isOpen={true}
+      isOpen={props.isOpen}
       header="Invite a new Member"
       message="Invite a new member to join this family by entering their email address."
       inputs={[{ name: 'email', type: 'email', placeholder: 'Enter the email address' }]}

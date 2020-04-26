@@ -16,5 +16,7 @@ namespace Forager.Data
     public string Description { get; set; } 
     public string ImagePath { get; set; }
     public PackagingType PackagingType { get; set; }
+    public User CreatedBy { get; set; }
+    public DateTime CreatedOn { get; set; }
   }
 }

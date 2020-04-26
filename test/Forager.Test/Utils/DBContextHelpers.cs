@@ -12,8 +12,8 @@ namespace Forager.Utils
       var user1 = new User { Id = 1, Email = "correct@email.com" };
       var user2 = new User { Id = 2, Email = "wrong@email.com" };
       var user3 = new User { Id = 3, Email = "also.wrong@email.com" };
-      var family1 = new Family { Id = 1, CreatorId = 1 };
-      var family2 = new Family { Id = 2, CreatorId = 3 };
+      var family1 = new Family { Id = 1, CreatedBy = user1 };
+      var family2 = new Family { Id = 2, CreatedBy = user3 };
       var uf1 = new UserFamily { Family = family1, FamilyId = 1, User = user1, UserId = 1 };
       var uf2 = new UserFamily { Family = family2, FamilyId = 2, User = user1, UserId = 1 };
       var uf3 = new UserFamily { Family = family1, FamilyId = 1, User = user2, UserId = 2 };

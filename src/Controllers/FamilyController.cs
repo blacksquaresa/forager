@@ -5,6 +5,7 @@ using Forager.Models;
 using Forager.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 
@@ -28,7 +29,7 @@ namespace Forager.Controllers
     [Route("{id}")]
     public ApiFamily Get(int id)
     {
-      var existingFamily = context.Families.SingleOrDefault(f => f.Id == id);
+      var existingFamily = context.Families.Include(f => f.CreatedBy).SingleOrDefault(f => f.Id == id);
       if (existingFamily == null)
       {
         throw new ForagerApiException(ForagerApiExceptionCode.FamilyNotFound);
@@ -47,7 +48,7 @@ namespace Forager.Controllers
 
       var currentUserEmail = userInformation.GetUserEmail();
       var currentUser = context.GetUserByEmail(currentUserEmail);
-      var dataFamily = new Family() { Name = name.Trim(), CreatorId = currentUser.Id };
+      var dataFamily = new Family() { Name = name.Trim(), CreatedBy = currentUser, CreatedOn = DateTime.Now };
       context.Families.Add(dataFamily);
       context.LinkUserToFamily(currentUser, dataFamily);
       context.SaveChanges();
@@ -64,7 +65,7 @@ namespace Forager.Controllers
         throw new ForagerApiException(ForagerApiExceptionCode.InvalidNameProvided);
       }
 
-      var existingFamily = context.Families.SingleOrDefault(f => f.Id == id);
+      var existingFamily = context.Families.Include(f => f.CreatedBy).SingleOrDefault(f => f.Id == id);
       if (existingFamily == null)
       {
         throw new ForagerApiException(ForagerApiExceptionCode.FamilyNotFound);

@@ -9,7 +9,10 @@ namespace Forager.Data
   {
     public int Id { get; set; }
     public string Name { get; set; }
-    public string Description { get; set; } 
+    public string Description { get; set; }
+    public ICollection<FamilyProducts> FamilyProducts { get; set; }
     public ICollection<Variant> Variants { get; set; }
+    public User CreatedBy { get; set; }
+    public DateTime CreatedOn { get; set; }
   }
 }

@@ -23,7 +23,7 @@ namespace Forager.Models
       {
         Id = dataFamily.Id,
         Name = dataFamily.Name,
-        Creator = dataFamily.Members.Single(u => u.Id == dataFamily.CreatorId).Id,
+        Creator = dataFamily.CreatedBy.Id,
         Members = dataFamily.Members.Select(u => u.Id).ToList(),
         Lists = dataFamily.Lists?.Select(u => u.Id).ToList()
       };

@@ -2,9 +2,12 @@ import React from 'react';
 import { IonAlert } from '@ionic/react';
 import { addFamily } from '../store/actions';
 import { api } from '../App';
+import { connect } from 'react-redux';
+import { Family } from '../models/Family';
 
 type NewFamilyAlertProps = {
   closeFunction: (isOpen: boolean) => void;
+  addFamily: (family: Family) => void;
 };
 const NewFamilyAlert: React.FC<NewFamilyAlertProps> = (props) => {
   return (
@@ -25,7 +28,7 @@ const NewFamilyAlert: React.FC<NewFamilyAlertProps> = (props) => {
           text: 'Create Family',
           handler: async (data) => {
             const family = await api.createFamily(data.name);
-            addFamily(family);
+            props.addFamily(family);
             props.closeFunction(false);
           }
         }
@@ -34,4 +37,4 @@ const NewFamilyAlert: React.FC<NewFamilyAlertProps> = (props) => {
   );
 };
 
-export default NewFamilyAlert;
+export default connect(null, { addFamily })(NewFamilyAlert);

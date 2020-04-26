@@ -1,5 +1,7 @@
 import { Family } from '../models/Family';
 import { InitialData } from '../models/InitialData';
+import { Product } from '../models/Product';
+import { List } from '../models/List';
 
 type RequestType = 'GET' | 'PUT' | 'POST' | 'DELETE';
 
@@ -31,9 +33,19 @@ export class Api {
     return result as Family;
   }
 
-  public async createList(name: string, familyId: number): Promise<Family> {
+  public async createList(name: string, familyId: number): Promise<List> {
     const result = await this._sendRequest('list', 'PUT', { name, familyId });
-    return result as Family;
+    return result as List;
+  }
+
+  public async createProduct(name: string, description: string): Promise<Product> {
+    const result = await this._sendRequest('product', 'PUT', { name, description });
+    return result as Product;
+  }
+
+  public async getProducts(): Promise<Product[]> {
+    const result = await this._sendRequest('product', 'GET');
+    return result as Product[];
   }
 
   public async _sendRequest<T>(

@@ -2,7 +2,7 @@ import React from 'react';
 import { Redirect, Route } from 'react-router-dom';
 import { IonApp, IonIcon, IonLabel, IonRouterOutlet, IonTabBar, IonTabButton, IonTabs, IonLoading } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import { people, home } from 'ionicons/icons';
+import { people, home, cart } from 'ionicons/icons';
 import Home from './pages/Home';
 import { connect } from 'react-redux';
 
@@ -32,6 +32,7 @@ import { InitialData } from './models/InitialData';
 import helpers from './store/helpers';
 import { Mapped } from './store/types';
 import ShoppingList from './pages/ShoppingList';
+import Products from './pages/Products';
 
 export const api = new Api('/api');
 
@@ -59,6 +60,8 @@ export const App: React.FC<AppProps> = (props) => {
             <Route path="/home" component={Home} exact={true} />
             <Route path="/families" component={Families} exact={true} />
             <Route path="/list/:id" component={ShoppingList} />
+            <Route path="/products" component={Products} exact={true} />
+            <Route path="/product/:id" component={Products} />
             <Route path="/" render={() => <Redirect to="/home" />} exact={true} />
           </IonRouterOutlet>
           <IonTabBar slot="bottom">
@@ -69,6 +72,10 @@ export const App: React.FC<AppProps> = (props) => {
             <IonTabButton tab="families" href="/families">
               <IonIcon icon={people} />
               <IonLabel>Families</IonLabel>
+            </IonTabButton>
+            <IonTabButton tab="products" href="/products">
+              <IonIcon icon={cart} />
+              <IonLabel>Products</IonLabel>
             </IonTabButton>
           </IonTabBar>
         </IonTabs>

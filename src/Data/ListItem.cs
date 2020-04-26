@@ -13,5 +13,7 @@ namespace Forager.Data
     public ICollection<Variant> Variants { get; set; }
     public int Quantity { get; set; }
     public string Units { get; set; }
+    public User CreatedBy { get; set; }
+    public DateTime CreatedOn { get; set; }
   }
 }

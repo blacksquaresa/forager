@@ -8,6 +8,8 @@ namespace Forager.Data
 {
   public class ForagerContext : DbContext
   {
+    public const int UniversalFamilyId = 1;
+
     public ForagerContext(): base() { }
 
     public ForagerContext(DbContextOptions<ForagerContext> options) : base(options) { }
@@ -28,6 +30,8 @@ namespace Forager.Data
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+      modelBuilder.Entity<Family>().HasData(new Family { Id = UniversalFamilyId, Name = "Universal Family" });
+
       modelBuilder.Entity<UserFamily>()
           .HasKey(bc => new { bc.UserId, bc.FamilyId });
       modelBuilder.Entity<UserFamily>()
@@ -37,6 +41,17 @@ namespace Forager.Data
       modelBuilder.Entity<UserFamily>()
           .HasOne(bc => bc.Family)
           .WithMany(f => f.UserFamilies)
+          .HasForeignKey(bc => bc.FamilyId);
+
+      modelBuilder.Entity<FamilyProducts>()
+          .HasKey(bc => new { bc.ProductId, bc.FamilyId });
+      modelBuilder.Entity<FamilyProducts>()
+          .HasOne(bc => bc.Product)
+          .WithMany(u => u.FamilyProducts)
+          .HasForeignKey(bc => bc.ProductId);
+      modelBuilder.Entity<FamilyProducts>()
+          .HasOne(bc => bc.Family)
+          .WithMany(f => f.FamilyProducts)
           .HasForeignKey(bc => bc.FamilyId);
     }
   }

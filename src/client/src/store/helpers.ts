@@ -6,6 +6,7 @@ import { List } from 'immutable';
 import { List as ShoppingList } from '../models/List';
 import store from './store';
 import { Invitation } from '../models/Invitation';
+import { Product } from '../models/Product';
 
 export function isLoggedIn(state: Mapped<DataContext>): boolean {
   const isLoggedIn = state.get('currentUser')?.get('isLoggedIn');
@@ -25,6 +26,11 @@ export function getCurrentFamily(state: Mapped<DataContext>): Mapped<Family> {
 export function getFamilies(state: Mapped<DataContext>): List<Mapped<Family>> {
   const families = state.get('families') as List<Mapped<Family>>;
   return families;
+}
+
+export function getProducts(state: Mapped<DataContext>): List<Mapped<Product>> {
+  const products = state.get('products') as List<Mapped<Product>>;
+  return products;
 }
 
 export function getUsers(state: Mapped<DataContext>): List<Mapped<User>> {
@@ -72,12 +78,12 @@ export function toList(source?: Mapped<ShoppingList>): ShoppingList | undefined 
   return list;
 }
 
-export function toInvitationArray(source?: List<Mapped<Invitation>>): Invitation[] | undefined {
+export function toArray<T>(source?: List<Mapped<T>>): T[] | undefined {
   if (!source) {
     return undefined;
   }
 
-  const list = source.toJS() as Invitation[];
+  const list = source.toJS() as T[];
   return list;
 }
 
@@ -118,8 +124,9 @@ export default {
   getLists,
   getUsers,
   getInvitations,
+  getProducts,
   toUser,
   toFamily,
   toList,
-  toInvitationArray
+  toArray
 };

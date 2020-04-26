@@ -1,14 +1,18 @@
 import { Action, Mapped } from './types';
 import { DataContext } from '../models/DataContext';
 import { InitialData } from '../models/InitialData';
-import { fromJS } from 'immutable';
+import { fromJS, List } from 'immutable';
 import { Invitation } from '../models/Invitation';
+import { Product } from '../models/Product';
+import { User } from '../models/User';
+import { Family } from '../models/Family';
 
 const initialState: DataContext = {
   users: [],
   families: [],
   invitations: [],
-  lists: []
+  lists: [],
+  products: []
 };
 
 const reducer = (state: Mapped<DataContext> = fromJS(initialState), action: Action) => {
@@ -17,7 +21,25 @@ const reducer = (state: Mapped<DataContext> = fromJS(initialState), action: Acti
       return state.updateIn(['users'], (users) => users.push(fromJS(action.payload)));
     }
     case 'ADD_FAMILY': {
-      return state.updateIn(['families'], (families) => families.push(fromJS(action.payload)));
+      return state.withMutations((st) => {
+        return st
+          .updateIn(['families'], (families) => families.push(fromJS(action.payload)))
+          .updateIn(['currentUser', 'families'], (families) => families.push(action.payload.id));
+      });
+    }
+    case 'ADD_LIST': {
+      return state.withMutations((st) => {
+        const familyIndex = st.get('families').findKey((f: Mapped<Family>) => f.get('id') === action.payload.familyId);
+        return st
+          .updateIn(['lists'], (lists) => lists.push(fromJS(action.payload.list)))
+          .updateIn(['families', familyIndex, 'lists'], (lists) => lists.push(action.payload.list.id));
+      });
+    }
+    case 'ADD_PRODUCT': {
+      return state.updateIn(['products'], (products) => products.push(fromJS(action.payload)));
+    }
+    case 'UPDATE_PRODUCTS': {
+      return state.updateIn(['products'], (products: List<Mapped<Product>>) => products.merge(fromJS(action.payload)));
     }
     case 'ADD_INITIAL_DATA': {
       let data = action.payload as InitialData;

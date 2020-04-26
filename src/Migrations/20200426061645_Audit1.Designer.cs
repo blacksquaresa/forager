@@ -4,14 +4,16 @@ using Forager.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Forager.Migrations
 {
     [DbContext(typeof(ForagerContext))]
-    partial class ForagerContextModelSnapshot : ModelSnapshot
+    [Migration("20200426061645_Audit1")]
+    partial class Audit1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -26,43 +28,15 @@ namespace Forager.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("CreatedById")
+                    b.Property<int>("CreatorId")
                         .HasColumnType("int");
-
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CreatedById");
-
                     b.ToTable("Families");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            CreatedOn = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Name = "Universal Family"
-                        });
-                });
-
-            modelBuilder.Entity("Forager.Data.FamilyProducts", b =>
-                {
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("FamilyId")
-                        .HasColumnType("int");
-
-                    b.HasKey("ProductId", "FamilyId");
-
-                    b.HasIndex("FamilyId");
-
-                    b.ToTable("FamilyProducts");
                 });
 
             modelBuilder.Entity("Forager.Data.Invitation", b =>
@@ -149,12 +123,17 @@ namespace Forager.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("FamilyId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CreatedById");
+
+                    b.HasIndex("FamilyId");
 
                     b.ToTable("Products");
                 });
@@ -299,28 +278,6 @@ namespace Forager.Migrations
                     b.ToTable("Variant");
                 });
 
-            modelBuilder.Entity("Forager.Data.Family", b =>
-                {
-                    b.HasOne("Forager.Data.User", "CreatedBy")
-                        .WithMany()
-                        .HasForeignKey("CreatedById");
-                });
-
-            modelBuilder.Entity("Forager.Data.FamilyProducts", b =>
-                {
-                    b.HasOne("Forager.Data.Family", "Family")
-                        .WithMany("FamilyProducts")
-                        .HasForeignKey("FamilyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Forager.Data.Product", "Product")
-                        .WithMany("FamilyProducts")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("Forager.Data.Invitation", b =>
                 {
                     b.HasOne("Forager.Data.Family", "Family")
@@ -348,6 +305,10 @@ namespace Forager.Migrations
                     b.HasOne("Forager.Data.User", "CreatedBy")
                         .WithMany()
                         .HasForeignKey("CreatedById");
+
+                    b.HasOne("Forager.Data.Family", "Family")
+                        .WithMany()
+                        .HasForeignKey("FamilyId");
                 });
 
             modelBuilder.Entity("Forager.Data.ShoppingList", b =>
