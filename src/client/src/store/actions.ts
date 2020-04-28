@@ -30,6 +30,11 @@ export const addProduct = (product: Product) => ({
   payload: product
 });
 
+export const updateProduct = (product: Product) => ({
+  type: 'UPDATE_PRODUCT',
+  payload: product
+});
+
 export const updateProducts = (products: Product[]) => ({
   type: 'UPDATE_PRODUCTS',
   payload: products

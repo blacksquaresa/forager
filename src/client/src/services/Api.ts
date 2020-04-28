@@ -43,9 +43,19 @@ export class Api {
     return result as Product;
   }
 
+  public async updateProduct(id: number, name: string, description: string): Promise<Product> {
+    const result = await this._sendRequest(`product/${id}`, 'POST', { name, description });
+    return result as Product;
+  }
+
   public async getProducts(): Promise<Product[]> {
     const result = await this._sendRequest('product', 'GET');
     return result as Product[];
+  }
+
+  public async getProductDetails(id: number): Promise<Product> {
+    const result = await this._sendRequest(`product/${id}`, 'GET');
+    return result as Product;
   }
 
   public async _sendRequest<T>(

@@ -33,6 +33,7 @@ import helpers from './store/helpers';
 import { Mapped } from './store/types';
 import ShoppingList from './pages/ShoppingList';
 import Products from './pages/Products';
+import ProductDetail from './pages/Product';
 
 export const api = new Api('/api');
 
@@ -60,8 +61,8 @@ export const App: React.FC<AppProps> = (props) => {
             <Route path="/home" component={Home} exact={true} />
             <Route path="/families" component={Families} exact={true} />
             <Route path="/list/:id" component={ShoppingList} />
+            <Route path="/products/:id" component={ProductDetail} />
             <Route path="/products" component={Products} exact={true} />
-            <Route path="/product/:id" component={Products} />
             <Route path="/" render={() => <Redirect to="/home" />} exact={true} />
           </IonRouterOutlet>
           <IonTabBar slot="bottom">

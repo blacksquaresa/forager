@@ -10,7 +10,6 @@ import {
   IonList
 } from '@ionic/react';
 import { cart } from 'ionicons/icons';
-import { slug } from '../services/Utils';
 import { Product } from '../models/Product';
 import ProductItem from './ProductItem';
 
@@ -36,7 +35,7 @@ function drawNoProducts(props: ProductListProps): ReactElement<ProductListProps,
 function drawProducts(products: Product[]): ReactNode {
   let result: JSX.Element[] = [];
   products.forEach((product) => {
-    result.push(<ProductItem product={product} />);
+    result.push(<ProductItem product={product} key={product.id} />);
   });
   return result;
 }

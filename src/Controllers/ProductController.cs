@@ -5,6 +5,7 @@ using Forager.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Linq;
 
 namespace Forager.Controllers
@@ -73,9 +74,20 @@ namespace Forager.Controllers
         throw new ForagerApiException(ForagerApiExceptionCode.InvalidNameProvided);
       }
 
-      var dataProduct = new Product() { Name = productData.name.Trim(), Description = productData.Description?.Trim() };
+      var currentUserEmail = userInformation.GetUserEmail();
+      var currentUser = context.GetUserByEmail(currentUserEmail);
+      var dataProduct = new Product()
+      {
+        Name = productData.name.Trim(),
+        Description = productData.Description?.Trim(),
+        CreatedBy = currentUser,
+        CreatedOn = DateTime.Now
+      };
+      dataProduct.FamilyProducts = currentUser.Families.Select(f => new FamilyProducts { Family = f, Product = dataProduct }).ToArray();
+
       context.Products.Add(dataProduct);
       context.SaveChanges();
+
       var product = ApiProduct.FromProduct(dataProduct);
       return product;
     }
@@ -92,7 +104,7 @@ namespace Forager.Controllers
       var existingProduct = context.Products.SingleOrDefault(f => f.Id == id);
       if (existingProduct == null)
       {
-        throw new ForagerApiException(ForagerApiExceptionCode.ListNotFound);
+        throw new ForagerApiException(ForagerApiExceptionCode.ProductNotFound);
       }
 
       existingProduct.Name = productData.name.Trim();

@@ -8,12 +8,14 @@ type ProductItemProps = {
   isSelected?: boolean;
 };
 const ProductItem: React.FC<ProductItemProps> = (props) => {
-  const color = props.isSelected ? 'primary' : 'secondary';
+  const color = props.isSelected ? 'primary' : '';
   return (
-    <IonItem color={color} href={`/product/${props.product.id}`} key={props.product.id} detail>
+    <IonItem color={color} href={`/products/${props.product.id}`} key={props.product.id} detail>
       <IonIcon icon={pricetag} slot="start" />
-      <IonLabel>{props.product.name}</IonLabel>
-      <IonLabel>{props.product.description}</IonLabel>
+      <IonLabel>
+        <h2>{props.product.name}</h2>
+        <p>{props.product.description}</p>
+      </IonLabel>
     </IonItem>
   );
 };

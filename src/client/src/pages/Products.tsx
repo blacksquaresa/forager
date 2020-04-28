@@ -62,7 +62,11 @@ const Products: React.FC<ProductsProps> = (props) => {
             IDK.
           </IonCardContent>
         </IonCard>
-        <ProductList products={helpers.toArray(props.products)} createNewProduct={setCreateNewProductAlertIsUp} />
+        {checkedForNewProducts ? (
+          <ProductList products={helpers.toArray(props.products)} createNewProduct={setCreateNewProductAlertIsUp} />
+        ) : (
+          ''
+        )}
       </IonContent>
       {createNewProductAlertIsUp ? <NewProductAlert closeFunction={setCreateNewProductAlertIsUp} /> : ''}
       <IonLoading isOpen={!checkedForNewProducts} message={'Please wait...'} />

@@ -2,9 +2,12 @@ import React from 'react';
 import { IonAlert } from '@ionic/react';
 import { addProduct } from '../store/actions';
 import { api } from '../App';
+import { connect } from 'react-redux';
+import { Product } from '../models/Product';
 
 type NewProductAlertProps = {
   closeFunction: (isOpen: boolean) => void;
+  addProduct: (product: Product) => void;
 };
 const NewProductAlert: React.FC<NewProductAlertProps> = (props) => {
   return (
@@ -28,7 +31,7 @@ const NewProductAlert: React.FC<NewProductAlertProps> = (props) => {
           text: 'Add Product',
           handler: async (data) => {
             const product = await api.createProduct(data.name, data.description);
-            addProduct(product);
+            props.addProduct(product);
             props.closeFunction(false);
           }
         }
@@ -37,4 +40,4 @@ const NewProductAlert: React.FC<NewProductAlertProps> = (props) => {
   );
 };
 
-export default NewProductAlert;
+export default connect(null, { addProduct })(NewProductAlert);

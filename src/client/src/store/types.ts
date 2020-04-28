@@ -31,6 +31,11 @@ type addProductAction = {
   payload: Product;
 };
 
+type updateProductAction = {
+  type: 'UPDATE_PRODUCT';
+  payload: Product;
+};
+
 type updateProductsAction = {
   type: 'UPDATE_PRODUCTS';
   payload: Product[];
@@ -62,6 +67,7 @@ export type Action =
   | addFamilyAction
   | addListAction
   | addProductAction
+  | updateProductAction
   | updateProductsAction
   | addFamiliesAction
   | acceptInvitationAction

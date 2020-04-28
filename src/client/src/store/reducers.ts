@@ -38,6 +38,15 @@ const reducer = (state: Mapped<DataContext> = fromJS(initialState), action: Acti
     case 'ADD_PRODUCT': {
       return state.updateIn(['products'], (products) => products.push(fromJS(action.payload)));
     }
+    case 'UPDATE_PRODUCT': {
+      const productIndex = state.get('products').findKey((p: Mapped<Product>) => p.get('id') === action.payload.id);
+      if (productIndex === undefined) {
+        return state.updateIn(['products'], (products) => products.push(fromJS(action.payload)));
+      }
+      return state.updateIn(['products', productIndex], (product: Mapped<Product>) =>
+        product.merge(fromJS(action.payload))
+      );
+    }
     case 'UPDATE_PRODUCTS': {
       return state.updateIn(['products'], (products: List<Mapped<Product>>) => products.merge(fromJS(action.payload)));
     }

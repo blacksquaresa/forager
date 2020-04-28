@@ -78,6 +78,15 @@ export function toList(source?: Mapped<ShoppingList>): ShoppingList | undefined 
   return list;
 }
 
+export function toProduct(source?: Mapped<Product>): Product | undefined {
+  if (!source) {
+    return undefined;
+  }
+
+  const product = source.toJS() as Product;
+  return product;
+}
+
 export function toArray<T>(source?: List<Mapped<T>>): T[] | undefined {
   if (!source) {
     return undefined;
@@ -128,5 +137,6 @@ export default {
   toUser,
   toFamily,
   toList,
+  toProduct,
   toArray
 };
