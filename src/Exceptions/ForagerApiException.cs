@@ -14,7 +14,8 @@ namespace Forager.Exceptions
       { ForagerApiExceptionCode.InvalidNameProvided, "An invalid name was provided for this entity." },
       { ForagerApiExceptionCode.InvalidEmailProvided, "An invalid email address was provided for this entity." },
       { ForagerApiExceptionCode.ListNotFound, "No list could be found for the Id provided." },
-      { ForagerApiExceptionCode.ProductNotFound, "No product could be found for the Id provided." }
+      { ForagerApiExceptionCode.ProductNotFound, "No product could be found for the Id provided." },
+      { ForagerApiExceptionCode.InvalidNumberFormat, "An invalid number was supplied for this parameter." }
     };
 
     public ForagerApiException(ForagerApiExceptionCode code) : base(messages[code])
@@ -38,6 +39,7 @@ namespace Forager.Exceptions
     InvalidNameProvided = 1004,
     InvalidEmailProvided = 1005,
     ListNotFound = 1006,
-    ProductNotFound = 1007
+    ProductNotFound = 1007,
+    InvalidNumberFormat = 1008
   }
 }

@@ -11,7 +11,7 @@ namespace Forager.Data
     public string Name { get; set; }
     public string Description { get; set; }
     public ICollection<FamilyProducts> FamilyProducts { get; set; }
-    public ICollection<Variant> Variants { get; set; }
+    public ICollection<Variant> Variants { get; set; } = new List<Variant>();
     public User CreatedBy { get; set; }
     public DateTime CreatedOn { get; set; }
   }

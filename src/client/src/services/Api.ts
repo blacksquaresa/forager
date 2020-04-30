@@ -2,6 +2,7 @@ import { Family } from '../models/Family';
 import { InitialData } from '../models/InitialData';
 import { Product } from '../models/Product';
 import { List } from '../models/List';
+import { Variant } from '../models/Variant';
 
 type RequestType = 'GET' | 'PUT' | 'POST' | 'DELETE';
 
@@ -56,6 +57,22 @@ export class Api {
   public async getProductDetails(id: number): Promise<Product> {
     const result = await this._sendRequest(`product/${id}`, 'GET');
     return result as Product;
+  }
+
+  public async createVariant(
+    productId: number,
+    name: string,
+    description: string,
+    quantity: number,
+    units: string
+  ): Promise<Variant> {
+    const result = await this._sendRequest(`product/${productId}/variant`, 'PUT', {
+      name,
+      description,
+      quantity,
+      units
+    });
+    return result as Variant;
   }
 
   public async _sendRequest<T>(

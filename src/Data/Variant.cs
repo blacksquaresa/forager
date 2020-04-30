@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Forager.Data
 {
@@ -11,7 +10,8 @@ namespace Forager.Data
     public string Name { get; set; }
     public Product Product { get; set; }
     public ICollection<Source> Sources { get; set; }
-    public int Quantity { get; set; }
+    [Column(TypeName="decimal(18,2)")]
+    public decimal Quantity { get; set; }
     public string Units { get; set; }
     public string Description { get; set; } 
     public string ImagePath { get; set; }

@@ -9,7 +9,7 @@ namespace Forager.Models
     public string Name { get; set; }
     public int Product { get; set; }
     public ApiSource[] Sources { get; set; }
-    public int Quantity { get; set; }
+    public decimal Quantity { get; set; }
     public string Units { get; set; }
     public string Description { get; set; } 
     public string ImagePath { get; set; }

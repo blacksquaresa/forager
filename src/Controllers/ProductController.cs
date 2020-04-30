@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 
 namespace Forager.Controllers
@@ -94,7 +96,7 @@ namespace Forager.Controllers
 
     [HttpPost]
     [Route("{id}")]
-    public ApiProduct Post(int id, [FromBody]ProductApiPutRequest productData)
+    public ApiProduct Post(int id, [FromBody]ProductApiPutVariantRequest productData)
     {
       if (string.IsNullOrWhiteSpace(productData.name))
       {
@@ -113,6 +115,55 @@ namespace Forager.Controllers
 
       var product = ApiProduct.FromProduct(existingProduct);
       return product;
+    }
+
+
+    public class ProductApiPutVariantRequest
+    {
+      public string name { get; set; }
+      public string Description { get; set; }
+      public string Quantity { get; set; }
+      public string Units { get; set; }
+
+    }
+    [HttpPut]
+    [Route("{productId}/variant")]
+    public ApiVariant PutVariant(int productId, [FromBody]ProductApiPutVariantRequest variantData)
+    {
+      if (string.IsNullOrWhiteSpace(variantData.name))
+      {
+        throw new ForagerApiException(ForagerApiExceptionCode.InvalidNameProvided);
+      }
+
+      if(!decimal.TryParse(variantData.Quantity, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture.NumberFormat, out var quantity))
+      {
+        throw new ForagerApiException(ForagerApiExceptionCode.InvalidNumberFormat);
+      }
+
+      var existingProduct = context.Products.Find(productId);
+      if (existingProduct == null)
+      {
+        throw new ForagerApiException(ForagerApiExceptionCode.ProductNotFound);
+      }
+
+      var currentUserEmail = userInformation.GetUserEmail();
+      var currentUser = context.GetUserByEmail(currentUserEmail);
+      var dataVariant = new Variant()
+      {
+        Name = variantData.name.Trim(),
+        Description = variantData.Description?.Trim(),
+        Quantity = quantity,
+        Units = variantData.Units.Trim(),
+        CreatedBy = currentUser,
+        CreatedOn = DateTime.Now
+      };
+
+      existingProduct.Variants.Add(dataVariant);
+
+      context.SaveChanges();
+
+      var variant = ApiVariant.FromVariant(dataVariant);
+      return variant;
     }
   }
 }

@@ -6,6 +6,7 @@ import { Invitation } from '../models/Invitation';
 import { Product } from '../models/Product';
 import { User } from '../models/User';
 import { Family } from '../models/Family';
+import { Variant } from '../models/Variant';
 
 const initialState: DataContext = {
   users: [],
@@ -49,6 +50,18 @@ const reducer = (state: Mapped<DataContext> = fromJS(initialState), action: Acti
     }
     case 'UPDATE_PRODUCTS': {
       return state.updateIn(['products'], (products: List<Mapped<Product>>) => products.merge(fromJS(action.payload)));
+    }
+    case 'ADD_VARIANT': {
+      const productIndex = state
+        .get('products')
+        .findKey((p: Mapped<Product>) => p.get('id') === action.payload.product.id);
+      if (productIndex === undefined) {
+        action.payload.product.variants.push(action.payload.variant);
+        return state.updateIn(['products'], (products) => products.push(fromJS(action.payload.product)));
+      }
+      return state.updateIn(['products', productIndex, 'variants'], (variants: List<Mapped<Variant>>) =>
+        variants.push(fromJS(action.payload.variant))
+      );
     }
     case 'ADD_INITIAL_DATA': {
       let data = action.payload as InitialData;

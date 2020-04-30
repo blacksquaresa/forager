@@ -5,6 +5,7 @@ import { Invitation } from '../models/Invitation';
 import { InitialData } from '../models/InitialData';
 import { Product } from '../models/Product';
 import { List } from '../models/List';
+import { Variant } from '../models/Variant';
 
 type setUserAction = {
   type: 'SET_USER';
@@ -41,6 +42,11 @@ type updateProductsAction = {
   payload: Product[];
 };
 
+type addVariantAction = {
+  type: 'ADD_VARIANT';
+  payload: { product: Product; variant: Variant };
+};
+
 type addFamiliesAction = {
   type: 'ADD_FAMILIES';
   payload: Family[];
@@ -69,6 +75,7 @@ export type Action =
   | addProductAction
   | updateProductAction
   | updateProductsAction
+  | addVariantAction
   | addFamiliesAction
   | acceptInvitationAction
   | rejectInvitationAction

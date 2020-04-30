@@ -20,7 +20,7 @@ import helpers from '../store/helpers';
 import { Mapped } from '../store/types';
 import { List } from 'immutable';
 import { add, pricetag, create } from 'ionicons/icons';
-import NewProductAlert from '../alerts/NewProductAlert';
+import NewVariantAlert from '../alerts/NewVariantAlert';
 import { api } from '../App';
 import { useParams } from 'react-router-dom';
 import { Variant } from '../models/Variant';
@@ -88,7 +88,11 @@ const ProductDetail: React.FC<ProductDetailProps> = (props) => {
         <IonList lines="full">{drawVariants(product?.variants)}</IonList>
       </IonContent>
       {updateProductIsUp ? <EditProductAlert product={product!} closeFunction={setUpdateProductIsUp} /> : ''}
-      {createNewVariantAlertIsUp ? <NewProductAlert closeFunction={setCreateNewVariantAlertIsUp} /> : ''}
+      {createNewVariantAlertIsUp ? (
+        <NewVariantAlert product={product!} closeFunction={setCreateNewVariantAlertIsUp} />
+      ) : (
+        ''
+      )}
       <IonLoading isOpen={!fetchedDetails} message={'Please wait...'} />
     </IonPage>
   );
