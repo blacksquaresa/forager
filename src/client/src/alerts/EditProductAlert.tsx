@@ -22,7 +22,8 @@ const EditProductAlert: React.FC<EditProductAlertProps> = (props) => {
           type: 'text',
           value: props.product.description,
           placeholder: 'Description eg: Brown Sugar'
-        }
+        },
+        { name: 'units', type: 'text', value: props.product.units, placeholder: 'Units, singular eg: kilogram, litre' }
       ]}
       buttons={[
         {
@@ -36,7 +37,7 @@ const EditProductAlert: React.FC<EditProductAlertProps> = (props) => {
         {
           text: 'Update Product',
           handler: async (data) => {
-            const product = await api.updateProduct(props.product.id, data.name, data.description);
+            const product = await api.updateProduct(props.product.id, data.name, data.description, data.units);
             props.updateProduct(product);
             props.closeFunction(false);
           }

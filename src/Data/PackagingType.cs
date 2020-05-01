@@ -10,6 +10,7 @@ namespace Forager.Data
     Plastic,
     Paper,
     Metal,
+    None,
     Other
   }
 }

@@ -47,6 +47,11 @@ type addVariantAction = {
   payload: { product: Product; variant: Variant };
 };
 
+type updateVariantAction = {
+  type: 'UPDATE_VARIANT';
+  payload: { product: Product; variant: Variant };
+};
+
 type addFamiliesAction = {
   type: 'ADD_FAMILIES';
   payload: Family[];
@@ -76,6 +81,7 @@ export type Action =
   | updateProductAction
   | updateProductsAction
   | addVariantAction
+  | updateVariantAction
   | addFamiliesAction
   | acceptInvitationAction
   | rejectInvitationAction

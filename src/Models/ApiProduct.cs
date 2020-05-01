@@ -7,7 +7,8 @@ namespace Forager.Models
   {
     public int Id { get; set; }
     public string Name { get; set; }
-    public string Description { get; set; } 
+    public string Description { get; set; }
+    public string Units { get; set; }
     public ApiVariant[] Variants { get; set; }
 
     public static ApiProduct FromProduct(Product dataProduct)
@@ -16,7 +17,8 @@ namespace Forager.Models
       {
         Id = dataProduct.Id,
         Name = dataProduct.Name,
-        Description = dataProduct.Description
+        Description = dataProduct.Description,
+        Units = dataProduct.Units
       };
 
       if (dataProduct.Variants != null)

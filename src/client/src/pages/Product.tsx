@@ -19,12 +19,13 @@ import { updateProduct } from '../store/actions';
 import helpers from '../store/helpers';
 import { Mapped } from '../store/types';
 import { List } from 'immutable';
-import { add, pricetag, create } from 'ionicons/icons';
+import { add, create } from 'ionicons/icons';
 import NewVariantAlert from '../alerts/NewVariantAlert';
 import { api } from '../App';
 import { useParams } from 'react-router-dom';
 import { Variant } from '../models/Variant';
 import EditProductAlert from '../alerts/EditProductAlert';
+import VariantItem from '../components/VariantItem';
 
 function getProductDetails(
   id: number,
@@ -32,25 +33,23 @@ function getProductDetails(
   setFetchedDetails: (val: boolean) => void
 ): void {
   api.getProductDetails(id).then((product: Product) => {
-    setFetchedDetails(true);
     updateProductState(product);
+    setFetchedDetails(true);
   });
 }
 
-function drawVariants(variants: Variant[] | undefined): ReactNode {
+function drawVariants(
+  product: Product,
+  variants: Variant[] | undefined,
+  setCreateNewVariantAlertIsUp: (open: boolean) => void
+): ReactNode {
   let result: JSX.Element[] = [];
-  if (variants) {
+  if (variants?.length) {
     variants.forEach((variant) => {
-      result.push(
-        <IonItem key={variant.id} detail>
-          <IonIcon icon={pricetag} slot="start" />
-          <IonLabel>
-            <h2>{variant.name}</h2>
-            <p>{variant.description}</p>
-          </IonLabel>
-        </IonItem>
-      );
+      result.push(<VariantItem key={variant.id} variant={variant} product={product} />);
     });
+  } else {
+    setCreateNewVariantAlertIsUp(true);
   }
   return result;
 }
@@ -61,11 +60,16 @@ type ProductDetailProps = {
 };
 const ProductDetail: React.FC<ProductDetailProps> = (props) => {
   let { id } = useParams();
-  const product = helpers.toProduct(props.products.find((p) => p.get('id') == id));
   const [createNewVariantAlertIsUp, setCreateNewVariantAlertIsUp] = React.useState(false);
   const [updateProductIsUp, setUpdateProductIsUp] = React.useState(false);
   const [fetchedDetails, setFetchedDetails] = React.useState(false);
   React.useEffect(() => getProductDetails(Number(id), props.updateProduct, setFetchedDetails), []);
+
+  if (!fetchedDetails) {
+    return <IonLoading isOpen={!fetchedDetails} message={'Please wait...'} />;
+  }
+
+  const product = helpers.toProduct(props.products.find((p) => p.get('id') == id));
 
   return (
     <IonPage>
@@ -85,15 +89,13 @@ const ProductDetail: React.FC<ProductDetailProps> = (props) => {
             </IonLabel>
           </IonItem>
         </IonCard>
-        <IonList lines="full">{drawVariants(product?.variants)}</IonList>
+        {createNewVariantAlertIsUp ? (
+          <NewVariantAlert product={product!} closeFunction={setCreateNewVariantAlertIsUp} />
+        ) : (
+          <IonList lines="full">{drawVariants(product!, product?.variants, setCreateNewVariantAlertIsUp)}</IonList>
+        )}
       </IonContent>
       {updateProductIsUp ? <EditProductAlert product={product!} closeFunction={setUpdateProductIsUp} /> : ''}
-      {createNewVariantAlertIsUp ? (
-        <NewVariantAlert product={product!} closeFunction={setCreateNewVariantAlertIsUp} />
-      ) : (
-        ''
-      )}
-      <IonLoading isOpen={!fetchedDetails} message={'Please wait...'} />
     </IonPage>
   );
 };

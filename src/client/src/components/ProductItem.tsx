@@ -10,7 +10,7 @@ type ProductItemProps = {
 const ProductItem: React.FC<ProductItemProps> = (props) => {
   const color = props.isSelected ? 'primary' : '';
   return (
-    <IonItem color={color} href={`/products/${props.product.id}`} key={props.product.id} detail>
+    <IonItem color={color} routerLink={`/products/${props.product.id}`} key={props.product.id} detail>
       <IonIcon icon={pricetag} slot="start" />
       <IonLabel>
         <h2>{props.product.name}</h2>

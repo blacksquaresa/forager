@@ -46,6 +46,11 @@ export const addVariant = (product: Product, variant: Variant) => ({
   payload: { product, variant }
 });
 
+export const updateVariant = (product: Product, variant: Variant) => ({
+  type: 'UPDATE_VARIANT',
+  payload: { product, variant }
+});
+
 export const addFamilies = (families: Family[]) => ({
   type: 'ADD_FAMILIES',
   payload: families

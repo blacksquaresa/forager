@@ -1,5 +1,7 @@
 export type Variant = {
   id: number;
-  name: string;
+  brand: string;
+  container: string;
+  quantity: number;
   description: string;
 };

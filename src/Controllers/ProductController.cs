@@ -30,7 +30,7 @@ namespace Forager.Controllers
     [Route("{id}")]
     public ApiProduct Get(int id)
     {
-      var existingProduct = context.Products.SingleOrDefault(p => p.Id == id);
+      var existingProduct = context.Products.Include(p => p.Variants).SingleOrDefault(p => p.Id == id);
       if (existingProduct == null)
       {
         throw new ForagerApiException(ForagerApiExceptionCode.ListNotFound);
@@ -41,7 +41,11 @@ namespace Forager.Controllers
     }
 
     [HttpGet]
-    public ApiProduct[] GetAll(int p = 0, int s = 0)
+    public ApiProduct[] GetAll(int p = 0, int s = 0){
+      return PostAll(p, s);
+    }
+    [HttpPost]
+    public ApiProduct[] PostAll(int p = 0, int s = 0, [FromBody]int[] ignores = null)
     {
       var currentUserEmail = userInformation.GetUserEmail();
       var currentUser = context.GetUserByEmail(currentUserEmail);
@@ -52,6 +56,7 @@ namespace Forager.Controllers
         .Where(f => familiesToInclude.Contains(f.Id))
         .SelectMany(f => f.FamilyProducts)
         .Select(fp => fp.Product)
+        .Where(p => ignores == null || !ignores.Contains(p.Id))
         .OrderBy(p => p.Id)
         .Distinct()
         .OrderBy(p => p.Name)
@@ -64,14 +69,15 @@ namespace Forager.Controllers
 
     public class ProductApiPutRequest
     {
-      public string name { get; set; }
+      public string Name { get; set; }
       public string Description { get; set; }
+      public string Units { get; set; }
 
     }
     [HttpPut]
     public ApiProduct Put([FromBody]ProductApiPutRequest productData)
     {
-      if (string.IsNullOrWhiteSpace(productData.name))
+      if (string.IsNullOrWhiteSpace(productData.Name))
       {
         throw new ForagerApiException(ForagerApiExceptionCode.InvalidNameProvided);
       }
@@ -80,8 +86,9 @@ namespace Forager.Controllers
       var currentUser = context.GetUserByEmail(currentUserEmail);
       var dataProduct = new Product()
       {
-        Name = productData.name.Trim(),
+        Name = productData.Name.Trim(),
         Description = productData.Description?.Trim(),
+        Units = productData.Units?.Trim(),
         CreatedBy = currentUser,
         CreatedOn = DateTime.Now
       };
@@ -96,21 +103,22 @@ namespace Forager.Controllers
 
     [HttpPost]
     [Route("{id}")]
-    public ApiProduct Post(int id, [FromBody]ProductApiPutVariantRequest productData)
+    public ApiProduct Post(int id, [FromBody]ProductApiPutRequest productData)
     {
-      if (string.IsNullOrWhiteSpace(productData.name))
+      if (string.IsNullOrWhiteSpace(productData.Name))
       {
         throw new ForagerApiException(ForagerApiExceptionCode.InvalidNameProvided);
       }
 
-      var existingProduct = context.Products.SingleOrDefault(f => f.Id == id);
+      var existingProduct = context.Products.Include(p => p.Variants).SingleOrDefault(f => f.Id == id);
       if (existingProduct == null)
       {
         throw new ForagerApiException(ForagerApiExceptionCode.ProductNotFound);
       }
 
-      existingProduct.Name = productData.name.Trim();
+      existingProduct.Name = productData.Name.Trim();
       existingProduct.Description = productData.Description?.Trim();
+      existingProduct.Units = productData.Units?.Trim();
       context.SaveChanges();
 
       var product = ApiProduct.FromProduct(existingProduct);
@@ -120,22 +128,17 @@ namespace Forager.Controllers
 
     public class ProductApiPutVariantRequest
     {
-      public string name { get; set; }
+      public string Brand { get; set; }
+      public string Container { get; set; }
       public string Description { get; set; }
       public string Quantity { get; set; }
-      public string Units { get; set; }
 
     }
     [HttpPut]
     [Route("{productId}/variant")]
     public ApiVariant PutVariant(int productId, [FromBody]ProductApiPutVariantRequest variantData)
     {
-      if (string.IsNullOrWhiteSpace(variantData.name))
-      {
-        throw new ForagerApiException(ForagerApiExceptionCode.InvalidNameProvided);
-      }
-
-      if(!decimal.TryParse(variantData.Quantity, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture.NumberFormat, out var quantity))
+      if (!decimal.TryParse(variantData.Quantity, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture.NumberFormat, out var quantity))
       {
         throw new ForagerApiException(ForagerApiExceptionCode.InvalidNumberFormat);
       }
@@ -150,10 +153,10 @@ namespace Forager.Controllers
       var currentUser = context.GetUserByEmail(currentUserEmail);
       var dataVariant = new Variant()
       {
-        Name = variantData.name.Trim(),
+        Brand = variantData.Brand.Trim(),
         Description = variantData.Description?.Trim(),
         Quantity = quantity,
-        Units = variantData.Units.Trim(),
+        Container = variantData.Container?.Trim(),
         CreatedBy = currentUser,
         CreatedOn = DateTime.Now
       };
@@ -163,6 +166,42 @@ namespace Forager.Controllers
       context.SaveChanges();
 
       var variant = ApiVariant.FromVariant(dataVariant);
+      return variant;
+    }
+
+
+    [HttpPost]
+    [Route("{productId}/variant/{variantId}")]
+    public ApiVariant PostVariant(int productId, int variantId, [FromBody]ProductApiPutVariantRequest variantData)
+    {
+      if (!decimal.TryParse(variantData.Quantity, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture.NumberFormat, out var quantity))
+      {
+        throw new ForagerApiException(ForagerApiExceptionCode.InvalidNumberFormat);
+      }
+
+      var existingProduct = context.Products.Include(p => p.Variants).SingleOrDefault(f => f.Id == productId);
+      if (existingProduct == null)
+      {
+        throw new ForagerApiException(ForagerApiExceptionCode.ProductNotFound);
+      }
+
+      var existingVariant = existingProduct.Variants.SingleOrDefault(v => v.Id == variantId);
+      if (existingVariant == null)
+      {
+        throw new ForagerApiException(ForagerApiExceptionCode.VariantNotFound);
+      }
+
+      var currentUserEmail = userInformation.GetUserEmail();
+      var currentUser = context.GetUserByEmail(currentUserEmail);
+
+      existingVariant.Brand = variantData.Brand.Trim();
+      existingVariant.Description = variantData.Description?.Trim();
+      existingVariant.Quantity = quantity;
+      existingVariant.Container = variantData.Container?.Trim();
+
+      context.SaveChanges();
+
+      var variant = ApiVariant.FromVariant(existingVariant);
       return variant;
     }
   }

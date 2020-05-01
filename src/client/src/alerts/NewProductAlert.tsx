@@ -16,7 +16,8 @@ const NewProductAlert: React.FC<NewProductAlertProps> = (props) => {
       header="Add A New Product"
       inputs={[
         { name: 'name', type: 'text', placeholder: 'Name: eg: Brown sugar' },
-        { name: 'description', type: 'text', placeholder: 'Description eg: Brown Sugar' }
+        { name: 'description', type: 'text', placeholder: 'Description eg: Brown Sugar' },
+        { name: 'units', type: 'text', placeholder: 'Units, singular eg: kilogram, litre' }
       ]}
       buttons={[
         {
@@ -30,7 +31,7 @@ const NewProductAlert: React.FC<NewProductAlertProps> = (props) => {
         {
           text: 'Add Product',
           handler: async (data) => {
-            const product = await api.createProduct(data.name, data.description);
+            const product = await api.createProduct(data.name, data.description, data.units);
             props.addProduct(product);
             props.closeFunction(false);
           }

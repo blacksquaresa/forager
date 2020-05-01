@@ -17,10 +17,10 @@ const NewVariantAlert: React.FC<NewVariantAlertProps> = (props) => {
       isOpen={true}
       header="Add A New Variant"
       inputs={[
-        { name: 'name', type: 'text', placeholder: 'Name: eg: Brown sugar' },
-        { name: 'description', type: 'text', placeholder: 'Description eg: Brown Sugar' },
-        { name: 'quantity', type: 'number', min: 0, placeholder: 'Quantity' },
-        { name: 'units', type: 'text', placeholder: 'Units eg: kg, lt, grams' }
+        { name: 'brand', type: 'text', placeholder: 'Brand: eg: Coca Cola' },
+        { name: 'quantity', type: 'number', min: 0, placeholder: `Quantity in ${props.product.units}s` },
+        { name: 'container', type: 'text', placeholder: 'Container: eg: bag, box, 6 pack' },
+        { name: 'description', type: 'text', placeholder: 'Description eg: Brown Sugar' }
       ]}
       buttons={[
         {
@@ -36,10 +36,10 @@ const NewVariantAlert: React.FC<NewVariantAlertProps> = (props) => {
           handler: async (data) => {
             const variant = await api.createVariant(
               props.product.id,
-              data.name,
-              data.description,
+              data.brand,
               data.quantity,
-              data.units
+              data.container,
+              data.description
             );
             props.addVariant(props.product, variant);
             props.closeFunction(false);

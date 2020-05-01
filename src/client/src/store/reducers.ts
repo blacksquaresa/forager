@@ -63,6 +63,28 @@ const reducer = (state: Mapped<DataContext> = fromJS(initialState), action: Acti
         variants.push(fromJS(action.payload.variant))
       );
     }
+    case 'UPDATE_VARIANT': {
+      const productIndex = state
+        .get('products')
+        .findKey((p: Mapped<Product>) => p.get('id') === action.payload.product.id);
+      if (productIndex === undefined) {
+        action.payload.product.variants.push(action.payload.variant);
+        return state.updateIn(['products'], (products) => products.push(fromJS(action.payload.product)));
+      }
+
+      const variantIndex = state
+        .getIn(['products', productIndex, 'variants'])
+        .findKey((p: Mapped<Variant>) => p.get('id') === action.payload.variant.id);
+      if (variantIndex === undefined) {
+        return state.updateIn(['products', productIndex, 'variants'], (variants) =>
+          variants.push(fromJS(action.payload.variant))
+        );
+      }
+
+      return state.updateIn(['products', productIndex, 'variants'], (variants: List<Mapped<Variant>>) =>
+        variants.set(variantIndex, fromJS(action.payload.variant))
+      );
+    }
     case 'ADD_INITIAL_DATA': {
       let data = action.payload as InitialData;
 

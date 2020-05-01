@@ -6,11 +6,11 @@ namespace Forager.Models
   public class ApiVariant
   {
     public int Id { get; set; }
-    public string Name { get; set; }
+    public string Brand { get; set; }
     public int Product { get; set; }
     public ApiSource[] Sources { get; set; }
     public decimal Quantity { get; set; }
-    public string Units { get; set; }
+    public string Container { get; set; }
     public string Description { get; set; } 
     public string ImagePath { get; set; }
     public PackagingType PackagingType { get; set; }
@@ -20,11 +20,11 @@ namespace Forager.Models
       var variant = new ApiVariant()
       {
         Id = dataVariant.Id,
-        Name = dataVariant.Name,
+        Brand = dataVariant.Brand,
         Product = dataVariant.Product.Id,
         Quantity = dataVariant.Quantity,
-        Units = dataVariant.Units,
         Description = dataVariant.Description,
+        Container = dataVariant.Container,
         ImagePath = dataVariant.ImagePath,
         PackagingType = dataVariant.PackagingType
       };

@@ -10,6 +10,7 @@ namespace Forager.Data
     public int Id { get; set; }
     public string Name { get; set; }
     public string Description { get; set; }
+    public string Units { get; set; }
     public ICollection<FamilyProducts> FamilyProducts { get; set; }
     public ICollection<Variant> Variants { get; set; } = new List<Variant>();
     public User CreatedBy { get; set; }

@@ -33,6 +33,11 @@ export function getProducts(state: Mapped<DataContext>): List<Mapped<Product>> {
   return products;
 }
 
+export function getProduct(state: Mapped<DataContext>, id: number): Mapped<Product> {
+  const product = state.get('products').find((p: Mapped<Product>) => p.get('id') == id) as Mapped<Product>;
+  return product;
+}
+
 export function getUsers(state: Mapped<DataContext>): List<Mapped<User>> {
   const users = state.get('users') as List<Mapped<User>>;
   return users;
@@ -134,6 +139,7 @@ export default {
   getUsers,
   getInvitations,
   getProducts,
+  getProduct,
   toUser,
   toFamily,
   toList,

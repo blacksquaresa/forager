@@ -3,6 +3,8 @@ import { InitialData } from '../models/InitialData';
 import { Product } from '../models/Product';
 import { List } from '../models/List';
 import { Variant } from '../models/Variant';
+import store from '../store/store';
+import helpers from '../store/helpers';
 
 type RequestType = 'GET' | 'PUT' | 'POST' | 'DELETE';
 
@@ -39,38 +41,64 @@ export class Api {
     return result as List;
   }
 
-  public async createProduct(name: string, description: string): Promise<Product> {
-    const result = await this._sendRequest('product', 'PUT', { name, description });
+  public async createProduct(name: string, description: string, units: string): Promise<Product> {
+    const result = await this._sendRequest('product', 'PUT', { name, description, units });
     return result as Product;
   }
 
-  public async updateProduct(id: number, name: string, description: string): Promise<Product> {
-    const result = await this._sendRequest(`product/${id}`, 'POST', { name, description });
+  public async updateProduct(id: number, name: string, description: string, units: string): Promise<Product> {
+    const result = await this._sendRequest(`product/${id}`, 'POST', { name, description, units });
     return result as Product;
   }
 
   public async getProducts(): Promise<Product[]> {
-    const result = await this._sendRequest('product', 'GET');
+    const state = store.getState();
+    const productIds = helpers.toArray(helpers.getProducts(state))?.map((p) => p.id);
+    const result = await this._sendRequest('product', 'POST', productIds);
     return result as Product[];
   }
 
   public async getProductDetails(id: number): Promise<Product> {
-    const result = await this._sendRequest(`product/${id}`, 'GET');
-    return result as Product;
+    const state = store.getState();
+    const stateProduct = helpers.getProduct(state, id);
+    let product: Product;
+    if (stateProduct && stateProduct.has('variants') && stateProduct.get('variants').size) {
+      product = helpers.toProduct(stateProduct)!;
+    } else {
+      product = await this._sendRequest(`product/${id}`, 'GET');
+    }
+    return product;
   }
 
   public async createVariant(
     productId: number,
-    name: string,
-    description: string,
+    brand: string,
     quantity: number,
-    units: string
+    container: string,
+    description: string
   ): Promise<Variant> {
     const result = await this._sendRequest(`product/${productId}/variant`, 'PUT', {
-      name,
-      description,
+      brand,
       quantity,
-      units
+      container,
+      description
+    });
+    return result as Variant;
+  }
+
+  public async updateVariant(
+    productId: number,
+    variantId: number,
+    brand: string,
+    quantity: number,
+    container: string,
+    description: string
+  ): Promise<Variant> {
+    const result = await this._sendRequest(`product/${productId}/variant/${variantId}`, 'POST', {
+      brand,
+      quantity,
+      container,
+      description
     });
     return result as Variant;
   }
@@ -78,7 +106,7 @@ export class Api {
   public async _sendRequest<T>(
     endpoint: string,
     method: RequestType = 'GET',
-    params?: { [key: string]: string | number } | string
+    params?: { [key: string]: string | number } | string | (string | number)[]
   ): Promise<T> {
     const body = params ? JSON.stringify(params) : undefined;
     const headers = params ? { 'Content-Type': 'application/json' } : undefined;
