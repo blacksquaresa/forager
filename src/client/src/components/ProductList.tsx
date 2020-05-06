@@ -1,19 +1,19 @@
 import React, { ReactNode, ReactElement } from 'react';
 import {
+  IonList,
   IonCard,
   IonCardHeader,
   IonCardTitle,
+  IonCardContent,
   IonItem,
   IonIcon,
-  IonCardContent,
-  IonButton,
-  IonList
+  IonButton
 } from '@ionic/react';
-import { cart } from 'ionicons/icons';
 import { Product } from '../models/Product';
 import ProductItem from './ProductItem';
+import { cart } from 'ionicons/icons';
 
-function drawNoProducts(props: ProductListProps): ReactElement<ProductListProps, string> {
+function drawNoProducts(createNewProduct: (on: boolean) => void): ReactElement<ProductListProps, string> {
   return (
     <IonCard>
       <IonCardHeader>
@@ -24,7 +24,7 @@ function drawNoProducts(props: ProductListProps): ReactElement<ProductListProps,
       </IonCardContent>
       <IonItem>
         <IonIcon icon={cart} slot="start"></IonIcon>
-        <IonButton expand="block" onClick={() => props.createNewProduct(true)}>
+        <IonButton expand="block" onClick={() => createNewProduct(true)}>
           Create a new product
         </IonButton>
       </IonItem>
@@ -42,13 +42,12 @@ function drawProducts(products: Product[]): ReactNode {
 
 type ProductListProps = {
   products?: Product[];
-  createNewProduct: Function;
+  createNewProduct: (on: boolean) => void;
 };
 const ProductList: React.FC<ProductListProps> = (props) => {
   if (!props.products?.length) {
-    return drawNoProducts(props);
+    return drawNoProducts(props.createNewProduct);
   }
-
   return <IonList lines="full">{drawProducts(props.products)}</IonList>;
 };
 

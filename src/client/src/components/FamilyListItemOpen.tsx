@@ -11,7 +11,7 @@ function drawLists(family: Family): ReactNode {
   let result: JSX.Element[] = [];
   family.lists?.forEach((list) => {
     result.push(
-      <IonItem key={list.id} href={`/list/${list.id}`} detail>
+      <IonItem key={list.id} href={`families/list/${list.id}`} detail>
         <IonIcon icon={listCircle} slot="start" />
         <IonLabel>{list.name}</IonLabel>
       </IonItem>
@@ -39,27 +39,40 @@ type FamilyListItemOpenProps = {
   key: string;
 };
 const FamilyListItemOpen: React.FC<FamilyListItemOpenProps> = (props) => {
+  const [membersOpen, setMembersOpen] = React.useState(false);
+  const [listsOpen, setListsOpen] = React.useState(false);
   const [inviteNewMemberShowing, setinviteNewMemberShowing] = React.useState(false);
   const [AddNewListShowing, setAddNewListShowing] = React.useState(false);
   const [thankYouShowing, setthankYouShowing] = React.useState<string | false>(false);
+
+  function showInviteNewMembers(e: React.MouseEvent) {
+    setinviteNewMemberShowing(true);
+    e.stopPropagation();
+  }
+
+  function showAddNewList(e: React.MouseEvent) {
+    setAddNewListShowing(true);
+    e.stopPropagation();
+  }
+
   return (
     <div>
       <IonList>
-        <IonItem>
+        <IonItem color={membersOpen ? 'secondary' : 'light'} onClick={() => setMembersOpen(!membersOpen)}>
           <IonIcon icon={person} slot="start" />
           <IonLabel>Members ({props.family.members?.length || 0})</IonLabel>
-          <IonIcon icon={personAdd} slot="end" title="Add new member" onClick={() => setinviteNewMemberShowing(true)} />
+          <IonIcon icon={personAdd} slot="end" title="Add new member" onClick={showInviteNewMembers} />
         </IonItem>
-        {drawFamilyMembers(props.family)}
+        {membersOpen ? drawFamilyMembers(props.family) : ''}
       </IonList>
 
       <IonList>
-        <IonItem>
+        <IonItem color={listsOpen ? 'secondary' : 'light'} onClick={() => setListsOpen(!listsOpen)}>
           <IonIcon icon={list} slot="start" />
           <IonLabel>Lists ({props.family.lists?.length || 0})</IonLabel>
-          <IonIcon icon={addCircleOutline} slot="end" title="Add new list" onClick={() => setAddNewListShowing(true)} />
+          <IonIcon icon={addCircleOutline} slot="end" title="Add new list" onClick={showAddNewList} />
         </IonItem>
-        {drawLists(props.family)}
+        {listsOpen ? drawLists(props.family) : ''}
       </IonList>
 
       <NewMemberAlert

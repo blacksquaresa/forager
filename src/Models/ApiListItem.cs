@@ -17,10 +17,10 @@ namespace Forager.Models
       var item = new ApiListItem()
       {
         Id = dataItem.Id,
-        Name = dataItem.Name,
+        Name = dataItem.Product.Name,
         List = dataItem.List.Id,
         Quantity = dataItem.Quantity,
-        Units = dataItem.Units
+        Units = dataItem.Product.Units
       };
 
       if (dataItem.Variants != null)

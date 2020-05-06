@@ -60,7 +60,7 @@ export const App: React.FC<AppProps> = (props) => {
           <IonRouterOutlet>
             <Route path="/home" component={Home} exact={true} />
             <Route path="/families" component={Families} exact={true} />
-            <Route path="/list/:id" component={ShoppingList} />
+            <Route path="/families/list/:id" component={ShoppingList} />
             <Route path="/products/:id" component={ProductDetail} />
             <Route path="/products" component={Products} exact={true} />
             <Route path="/" render={() => <Redirect to="/home" />} exact={true} />

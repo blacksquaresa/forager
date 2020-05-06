@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
 import {
   IonContent,
   IonPage,
@@ -9,7 +9,9 @@ import {
   IonCardContent,
   IonFab,
   IonFabButton,
-  IonLoading
+  IonLoading,
+  IonItem,
+  IonButton
 } from '@ionic/react';
 import { connect } from 'react-redux';
 import { DataContext } from '../models/DataContext';
@@ -23,16 +25,7 @@ import { add } from 'ionicons/icons';
 import NewProductAlert from '../alerts/NewProductAlert';
 import ProductList from '../components/ProductList';
 import { api } from '../App';
-
-function checkForNewProducts(
-  updateProductState: (products: Product[]) => void,
-  setCheckedForNewProducts: (val: boolean) => void
-): void {
-  api.getProducts().then((products: Product[]) => {
-    setCheckedForNewProducts(true);
-    updateProductState(products);
-  });
-}
+import { checkForNewProducts } from '../services/Utils';
 
 type ProductsProps = {
   products: List<Mapped<Product>>;
@@ -42,7 +35,15 @@ type ProductsProps = {
 const Products: React.FC<ProductsProps> = (props) => {
   const [createNewProductAlertIsUp, setCreateNewProductAlertIsUp] = React.useState(false);
   const [checkedForNewProducts, setCheckedForNewProducts] = React.useState(false);
-  React.useEffect(() => checkForNewProducts(props.updateProducts, setCheckedForNewProducts), []);
+  React.useEffect(() => checkForNewProducts(api, props.updateProducts, setCheckedForNewProducts), []);
+
+  function drawProducts(productList: List<Mapped<Product>>): ReactElement<ProductsProps, string> | undefined {
+    if (!checkedForNewProducts) {
+      return;
+    }
+
+    return <ProductList products={helpers.toArray(productList)} createNewProduct={setCreateNewProductAlertIsUp} />;
+  }
 
   return (
     <IonPage>
@@ -62,11 +63,7 @@ const Products: React.FC<ProductsProps> = (props) => {
             IDK.
           </IonCardContent>
         </IonCard>
-        {checkedForNewProducts ? (
-          <ProductList products={helpers.toArray(props.products)} createNewProduct={setCreateNewProductAlertIsUp} />
-        ) : (
-          ''
-        )}
+        {drawProducts(props.products)}
       </IonContent>
       {createNewProductAlertIsUp ? <NewProductAlert closeFunction={setCreateNewProductAlertIsUp} /> : ''}
       <IonLoading isOpen={!checkedForNewProducts} message={'Please wait...'} />
