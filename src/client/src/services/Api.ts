@@ -5,6 +5,8 @@ import { List } from '../models/List';
 import { Variant } from '../models/Variant';
 import store from '../store/store';
 import helpers from '../store/helpers';
+import { ListItem } from '../models/ListItem';
+import { Mapped } from '../store/types';
 
 type RequestType = 'GET' | 'PUT' | 'POST' | 'DELETE';
 
@@ -53,8 +55,8 @@ export class Api {
 
   public async getProducts(): Promise<Product[]> {
     const state = store.getState();
-    const productIds = helpers.toArray(helpers.getProducts(state))?.map((p) => p.id);
-    const result = await this._sendRequest('product', 'POST', productIds);
+    const existingProductIds = helpers.toArray(helpers.getProducts(state))?.map((p) => p.id);
+    const result = await this._sendRequest('product', 'POST', existingProductIds);
     return result as Product[];
   }
 
@@ -62,12 +64,29 @@ export class Api {
     const state = store.getState();
     const stateProduct = helpers.getProduct(state, id);
     let product: Product;
-    if (stateProduct && stateProduct.has('variants') && stateProduct.get('variants').size) {
+    if (helpers.hasListWithItems(stateProduct, 'variants')) {
       product = helpers.toProduct(stateProduct)!;
     } else {
       product = await this._sendRequest(`product/${id}`, 'GET');
     }
     return product;
+  }
+
+  public async addProductsToList(listId: number, products: Map<number, number>): Promise<ListItem[]> {
+    let items = await this._sendRequest(`list/${listId}/items`, 'POST', [...products]);
+    return items as ListItem[];
+  }
+
+  public async getListDetails(id: number): Promise<List> {
+    const state = store.getState();
+    const stateList = helpers.getList(state, id);
+    let list: List;
+    if (helpers.hasListWithItems(stateList, 'items')) {
+      list = helpers.toList(stateList)!;
+    } else {
+      list = await this._sendRequest(`list/${id}`, 'GET');
+    }
+    return list;
   }
 
   public async createVariant(
@@ -106,7 +125,7 @@ export class Api {
   public async _sendRequest<T>(
     endpoint: string,
     method: RequestType = 'GET',
-    params?: { [key: string]: string | number } | string | (string | number)[]
+    params?: { [key: string]: string | number } | string | (string | number | number[])[] | Map<any, any>
   ): Promise<T> {
     const body = params ? JSON.stringify(params) : undefined;
     const headers = params ? { 'Content-Type': 'application/json' } : undefined;

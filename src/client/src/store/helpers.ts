@@ -48,9 +48,18 @@ export function getLists(state: Mapped<DataContext>): List<Mapped<ShoppingList>>
   return lists;
 }
 
+export function getList(state: Mapped<DataContext>, id: number): Mapped<ShoppingList> {
+  const list = state.get('lists').find((l: Mapped<ShoppingList>) => l.get('id') == id) as Mapped<ShoppingList>;
+  return list;
+}
+
 export function getInvitations(state: Mapped<DataContext>): List<Mapped<Invitation>> {
   const invitations = state.get('invitations') as List<Mapped<Invitation>>;
   return invitations;
+}
+
+export function hasListWithItems<T>(obj: Mapped<T>, listName: keyof T): boolean {
+  return obj && obj.has(listName) && obj.get(listName) && obj.get(listName).size;
 }
 
 export function toUser(source?: Mapped<User>): User | undefined {
@@ -113,12 +122,12 @@ function convertIdsToElements<TParent extends { [key: string]: any }, TElement e
   if (
     parent?.[prop]?.length &&
     typeof Array.isArray(parent[prop]) &&
-    typeof (parent[prop] as Array<any>)[0] === 'number'
+    typeof (parent[prop] as Array<number>)[0] === 'number'
   ) {
     const state = store.getState();
     const elements = state.get(stateProp) as List<Mapped<TElement>>;
     const actual: TElement[] = [];
-    for (let id of parent[prop]) {
+    for (let id of parent[prop] as Array<number>) {
       const element = converter(elements.find((l) => l.get('id') === id)) as TElement;
       if (element) {
         actual.push(element);
@@ -136,10 +145,12 @@ export default {
   getCurrentFamily,
   getFamilies,
   getLists,
+  getList,
   getUsers,
   getInvitations,
   getProducts,
   getProduct,
+  hasListWithItems,
   toUser,
   toFamily,
   toList,

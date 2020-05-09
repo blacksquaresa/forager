@@ -4,6 +4,10 @@ using Forager.Exceptions;
 using Forager.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Forager.Controllers
@@ -26,7 +30,11 @@ namespace Forager.Controllers
     [Route("{id}")]
     public ApiList Get(int id)
     {
-      var existingList = context.Lists.SingleOrDefault(l => l.Id == id);
+      var existingList = context.Lists
+                                .Include(list => list.Family)
+                                .Include(list => list.Items)
+                                .ThenInclude(li => li.Product)
+                                .SingleOrDefault(l => l.Id == id);
       if (existingList == null)
       {
         throw new ForagerApiException(ForagerApiExceptionCode.ListNotFound);
@@ -36,14 +44,16 @@ namespace Forager.Controllers
       return list;
     }
 
-    public class ListApiPutRequest{
+    public class ListApiPutRequest
+    {
       public string name { get; set; }
       public int familyId { get; set; }
     }
     [HttpPut]
     public ApiList Put([FromBody]ListApiPutRequest listData)
     {
-      if(string.IsNullOrWhiteSpace(listData.name)){
+      if (string.IsNullOrWhiteSpace(listData.name))
+      {
         throw new ForagerApiException(ForagerApiExceptionCode.InvalidNameProvided);
       }
 
@@ -81,6 +91,46 @@ namespace Forager.Controllers
       context.SaveChanges();
       var list = ApiList.FromList(existingList);
       return list;
+    }
+
+    [HttpPost]
+    [Route("{id}/items")]
+    public ApiListItem[] PostItems(int id, [FromBody]int[][] itemMap)
+    {
+      var existingList = context.Lists.Include(list => list.Items).ThenInclude(item => item.Product).SingleOrDefault(f => f.Id == id);
+      if (existingList == null)
+      {
+        throw new ForagerApiException(ForagerApiExceptionCode.ListNotFound);
+      }
+
+      var currentUserEmail = userInformation.GetUserEmail();
+      var currentUser = context.GetUserByEmail(currentUserEmail);
+      var newItems = new List<ListItem>();
+      var existingItems = existingList.Items ?? new List<ListItem>();
+      foreach (int[] entry in itemMap)
+      {
+        if (!existingItems.Any(i => i.Product.Id == entry[0]))
+        {
+          var newItem = new ListItem
+          {
+            ProductId = entry[0],
+            Quantity = entry[1],
+            List = existingList,
+            CreatedBy = currentUser,
+            CreatedOn = DateTime.Now
+          };
+          newItems.Add(newItem);
+        }
+      }
+
+      existingList.Items = existingItems.Concat(newItems).ToList();
+      context.SaveChanges();
+      var newApiItems = existingList
+                          .Items                            
+                          .Where(item => newItems.Any(i => i.Id == item.Id))
+                          .Select(item => ApiListItem.FromItem(item))
+                          .ToArray();
+      return newApiItems;
     }
   }
 }

@@ -5,6 +5,7 @@ import { Invitation } from '../models/Invitation';
 import { Product } from '../models/Product';
 import { List } from '../models/List';
 import { Variant } from '../models/Variant';
+import { ListItem } from '../models/ListItem';
 
 export const setUser = (user: User) => ({
   type: 'SET_USER',
@@ -24,6 +25,16 @@ export const addFamily = (family: Family) => ({
 export const addList = (list: List, familyId: number) => ({
   type: 'ADD_LIST',
   payload: { list, familyId }
+});
+
+export const updateList = (list: List) => ({
+  type: 'UPDATE_LIST',
+  payload: list
+});
+
+export const addItemsToList = (listId: number, items: ListItem[]) => ({
+  type: 'ADD_LISTITEMS',
+  payload: { listId, items }
 });
 
 export const addProduct = (product: Product) => ({

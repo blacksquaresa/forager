@@ -38,7 +38,7 @@ function drawNoProducts(): ReactElement<ChooseProductsModalProps, string> {
 type ChooseProductsModalProps = {
   isOpen?: boolean;
   products: List<Mapped<Product>>;
-  onClose: (products: Map<Product, number>) => void;
+  onClose: (products: Map<number, number>) => void;
   addProduct: (product: Product) => void;
   updateProducts: (products: Product[]) => void;
 };
@@ -49,7 +49,7 @@ const ChooseProductsModal: React.FC<ChooseProductsModalProps> = (props) => {
     return null;
   }
   const products = helpers.toArray(props.products);
-  const map = new Map<Product, number>();
+  const map = new Map<number, number>();
 
   function drawProducts(products?: Product[]): ReactNode {
     if (!checkedForNewProducts) {
@@ -67,7 +67,7 @@ const ChooseProductsModal: React.FC<ChooseProductsModalProps> = (props) => {
           product={product}
           key={product.id}
           onChange={(val: number) => {
-            map.set(product, val);
+            map.set(product.id, val);
           }}
         />
       );

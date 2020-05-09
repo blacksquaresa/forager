@@ -11,7 +11,7 @@ function drawLists(family: Family): ReactNode {
   let result: JSX.Element[] = [];
   family.lists?.forEach((list) => {
     result.push(
-      <IonItem key={list.id} href={`families/list/${list.id}`} detail>
+      <IonItem key={list.id} routerLink={`families/list/${list.id}`} detail>
         <IonIcon icon={listCircle} slot="start" />
         <IonLabel>{list.name}</IonLabel>
       </IonItem>

@@ -7,6 +7,7 @@ import { Product } from '../models/Product';
 import { User } from '../models/User';
 import { Family } from '../models/Family';
 import { Variant } from '../models/Variant';
+import { List as ShoppingList } from '../models/List';
 
 const initialState: DataContext = {
   users: [],
@@ -34,6 +35,21 @@ const reducer = (state: Mapped<DataContext> = fromJS(initialState), action: Acti
         return st
           .updateIn(['lists'], (lists) => lists.push(fromJS(action.payload.list)))
           .updateIn(['families', familyIndex, 'lists'], (lists) => lists.push(action.payload.list.id));
+      });
+    }
+    case 'UPDATE_LIST': {
+      const listIndex = state.get('lists').findKey((l: Mapped<ShoppingList>) => l.get('id') === action.payload.id);
+      if (listIndex === undefined) {
+        return state.updateIn(['lists'], (lists) => lists.push(fromJS(action.payload)));
+      }
+      return state.updateIn(['lists', listIndex], (list: Mapped<ShoppingList>) => list.merge(fromJS(action.payload)));
+    }
+    case 'ADD_LISTITEMS': {
+      return state.withMutations((st) => {
+        const listIndex = st.get('lists').findKey((f: Mapped<ShoppingList>) => f.get('id') === action.payload.listId);
+        return st.updateIn(['lists', listIndex, 'items'], (items) =>
+          (items || fromJS([])).concat(fromJS(action.payload.items))
+        );
       });
     }
     case 'ADD_PRODUCT': {

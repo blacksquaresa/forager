@@ -10,7 +10,7 @@ namespace Forager.Data
   {
     public const int UniversalFamilyId = 1;
 
-    public ForagerContext(): base() { }
+    public ForagerContext() : base() { }
 
     public ForagerContext(DbContextOptions<ForagerContext> options) : base(options) { }
 
@@ -53,6 +53,10 @@ namespace Forager.Data
           .HasOne(bc => bc.Family)
           .WithMany(f => f.FamilyProducts)
           .HasForeignKey(bc => bc.FamilyId);
+
+      modelBuilder.Entity<ListItem>()
+          .HasOne(li => li.Product);
+
     }
   }
 }

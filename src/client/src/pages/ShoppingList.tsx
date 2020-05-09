@@ -10,11 +10,13 @@ import {
   IonFab,
   IonFabButton,
   IonItem,
-  IonButton
+  IonButton,
+  IonLoading
 } from '@ionic/react';
 import { connect } from 'react-redux';
 import { DataContext } from '../models/DataContext';
 import TopToolbar from '../components/TopToolbar';
+import { addItemsToList, updateList } from '../store/actions';
 import helpers from '../store/helpers';
 import { Mapped } from '../store/types';
 import { List } from 'immutable';
@@ -23,6 +25,22 @@ import { add, cart } from 'ionicons/icons';
 import { useParams } from 'react-router-dom';
 import ChooseProductsModal from '../alerts/ChooseProductsModal';
 import { Product } from '../models/Product';
+import Conditional from '../components/Conditional';
+import { api } from '../App';
+import { ListItem } from '../models/ListItem';
+import ProductSelector from '../components/ProductSelector';
+import ShoppingListItem from '../components/ShoppingListItem';
+
+function getListDetails(
+  id: number,
+  updateListState: (list: ListModel) => void,
+  setLoadingIsUp: (val: boolean) => void
+): void {
+  api.getListDetails(id).then((list: ListModel) => {
+    updateListState(list);
+    setLoadingIsUp(false);
+  });
+}
 
 function drawNoItems(addNewItem: (on: boolean) => void): ReactElement<ShoppingListProps, string> {
   return (
@@ -61,12 +79,42 @@ function drawNoList(): ReactElement<ShoppingListProps, string> {
 
 type ShoppingListProps = {
   lists: List<Mapped<ListModel>>;
+  addItemsToList: (listId: number, items: ListItem[]) => void;
+  updateList: (list: ListModel) => void;
 };
 const ShoppingList: React.FC<ShoppingListProps> = (props) => {
   let { id } = useParams();
+  const [loadingIsUp, setLoadingIsUp] = React.useState(false);
   const [addProductIsUp, setAddProductIsUp] = React.useState(false);
+  React.useEffect(() => getListDetails(Number(id), props.updateList, setLoadingIsUp), []);
+
+  if (loadingIsUp) {
+    return <IonLoading isOpen={true} message={'Please wait...'} />;
+  }
+
   const list = helpers.toList(props.lists.find((l) => l.get('id') == id));
   if (!list) return drawNoList();
+
+  async function addProducts(products: Map<number, number>): Promise<void> {
+    setAddProductIsUp(false);
+    setLoadingIsUp(true);
+    const newItems = await api.addProductsToList(list!.id, products);
+    props.addItemsToList(list!.id, newItems);
+    setLoadingIsUp(false);
+  }
+
+  function drawItems() {
+    if (!list?.items?.length) {
+      return null;
+    }
+
+    let result: JSX.Element[] = [];
+    list.items.forEach((item) => {
+      result.push(<ShoppingListItem item={item} key={item.id} onChange={() => {}} onRemove={() => {}} />);
+    });
+    return result;
+  }
+
   return (
     <IonPage>
       <TopToolbar />
@@ -85,11 +133,13 @@ const ShoppingList: React.FC<ShoppingListProps> = (props) => {
           </IonCardContent>
         </IonCard>
 
-        {!list.items ? drawNoItems(setAddProductIsUp) : ''}
-        <ChooseProductsModal
-          isOpen={addProductIsUp}
-          onClose={(selected: Map<Product, number>) => setAddProductIsUp(false)}
-        />
+        <Conditional condition={!list.items?.length}>{drawNoItems(setAddProductIsUp)}</Conditional>
+
+        {drawItems()}
+
+        <Conditional condition={addProductIsUp}>
+          <ChooseProductsModal isOpen={addProductIsUp} onClose={addProducts} />
+        </Conditional>
       </IonContent>
     </IonPage>
   );
@@ -101,4 +151,4 @@ const mapStateToProps = (state: Mapped<DataContext>) => {
   };
 };
 
-export default connect(mapStateToProps)(ShoppingList);
+export default connect(mapStateToProps, { addItemsToList, updateList })(ShoppingList);

@@ -15,7 +15,6 @@ import { personAdd, people } from 'ionicons/icons';
 import FamilyListItemOpen from './FamilyListItemOpen';
 import { slug } from '../services/Utils';
 import { User } from '../models/User';
-import './FamilyList.css';
 import helpers from '../store/helpers';
 import { Mapped } from '../store/types';
 import { DataContext } from '../models/DataContext';

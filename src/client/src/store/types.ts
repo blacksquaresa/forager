@@ -6,6 +6,7 @@ import { InitialData } from '../models/InitialData';
 import { Product } from '../models/Product';
 import { List } from '../models/List';
 import { Variant } from '../models/Variant';
+import { ListItem } from '../models/ListItem';
 
 type setUserAction = {
   type: 'SET_USER';
@@ -25,6 +26,16 @@ type addFamilyAction = {
 type addListAction = {
   type: 'ADD_LIST';
   payload: { list: List; familyId: number };
+};
+
+type updateListAction = {
+  type: 'UPDATE_LIST';
+  payload: List;
+};
+
+type addListItemAction = {
+  type: 'ADD_LISTITEMS';
+  payload: { listId: number; items: ListItem[] };
 };
 
 type addProductAction = {
@@ -77,6 +88,8 @@ export type Action =
   | addUsersAction
   | addFamilyAction
   | addListAction
+  | updateListAction
+  | addListItemAction
   | addProductAction
   | updateProductAction
   | updateProductsAction

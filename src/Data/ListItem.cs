@@ -11,6 +11,7 @@ namespace Forager.Data
     public ShoppingList List { get; set; }
     public ICollection<Variant> Variants { get; set; }
     public int Quantity { get; set; }
+    public int ProductId { get; set; }
     public Product Product { get; set; }
     public User CreatedBy { get; set; }
     public DateTime CreatedOn { get; set; }

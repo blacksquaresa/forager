@@ -15,6 +15,7 @@ const ProductSelector: React.FC<ProductSelectorProps> = (props) => {
 
   function changeQuantity(val: number): void {
     setQuantity(quantity + val);
+    props.onChange(quantity + val);
   }
 
   return (
